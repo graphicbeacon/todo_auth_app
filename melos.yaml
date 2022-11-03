@@ -1,0 +1,12 @@
+name: todo_auth_app
+
+packages:
+  - packages/**
+
+scripts:
+  analyze:
+    exec: dart analyze .
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
