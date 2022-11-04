@@ -34,6 +34,8 @@ class _TodosFormState extends State<TodosForm> {
             decoration: const InputDecoration(
               labelText: 'Due date',
               counterText: '',
+              hintText: 'DD/MM/YYYY',
+              hintStyle: TextStyle(color: Colors.white30),
             ),
             style: const TextStyle(
               color: Colors.white,

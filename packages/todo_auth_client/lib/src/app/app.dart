@@ -24,8 +24,14 @@ class App extends StatelessWidget {
         builder: (context, state) => const TodosScreen(),
         routes: [
           GoRoute(
+            path: "new",
+            builder: (context, state) =>
+                const TodosFormScreen(title: 'New Todo'),
+          ),
+          GoRoute(
             path: "edit",
-            builder: (context, state) => const TodosEditScreen(),
+            builder: (context, state) =>
+                const TodosFormScreen(title: 'Edit Todo'),
           ),
         ],
       ),

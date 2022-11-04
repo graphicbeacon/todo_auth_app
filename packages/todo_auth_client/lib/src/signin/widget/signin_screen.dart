@@ -15,34 +15,16 @@ class SigninScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 60),
-              const CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 30,
-                child: Icon(
-                  Icons.app_registration_rounded,
-                  color: Colors.deepPurple,
-                  size: 40,
-                ),
-              ),
-              const SizedBox(height: 60),
-              const SizedBox(
-                width: 400,
-                child: SigninForm(),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'or',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 400,
-                child: CupertinoButton(
+          child: SizedBox(
+            width: 400,
+            child: Column(
+              children: [
+                const SizedBox(height: 60),
+                const TodoAppLogo(),
+                const SizedBox(height: 40),
+                const SigninForm(),
+                const SizedBox(height: 20),
+                CupertinoButton(
                   onPressed: () {
                     GoRouter.of(context).go('/signup');
                   },
@@ -62,15 +44,15 @@ class SigninScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(
-                      'Sign up',
+                      'Register',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 70),
-            ],
+                const SizedBox(height: 70),
+              ],
+            ),
           ),
         ),
       ),
