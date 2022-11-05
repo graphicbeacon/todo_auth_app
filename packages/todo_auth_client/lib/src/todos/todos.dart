@@ -1,4 +1,4 @@
 export 'models/todo.dart';
-export 'widget/todos_form_screen.dart';
-export 'widget/todos_form.dart';
-export 'widget/todos_screen.dart';
+export 'widgets/todos_form_screen.dart';
+export 'widgets/todos_form.dart';
+export 'widgets/todos_screen.dart';

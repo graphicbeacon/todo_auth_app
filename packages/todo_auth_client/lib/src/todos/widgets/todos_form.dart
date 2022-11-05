@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class TodosForm extends StatefulWidget {
   const TodosForm({super.key});
@@ -11,6 +10,21 @@ class TodosForm extends StatefulWidget {
 
 class _TodosFormState extends State<TodosForm> {
   final _formKey = GlobalKey<FormState>();
+  final titleCtrl = TextEditingController();
+  final dueDateCtrl = TextEditingController();
+  final descriptionCtrl = TextEditingController();
+
+  DateTime? isValidDate(String date) => DateTime.tryParse(date);
+
+  submitForm() {
+    final title = titleCtrl.text;
+    final dueDate = dueDateCtrl.text;
+    final description = descriptionCtrl.text;
+
+    print(title);
+    print(dueDate);
+    print(description);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +35,14 @@ class _TodosFormState extends State<TodosForm> {
         children: [
           const SizedBox(height: 6),
           TextFormField(
+            controller: titleCtrl,
+            validator: (value) {
+              if (value?.isEmpty == true) {
+                return 'Please enter the title';
+              }
+
+              return null;
+            },
             decoration: const InputDecoration(
               labelText: 'Title',
               counterText: '',
@@ -31,6 +53,14 @@ class _TodosFormState extends State<TodosForm> {
           ),
           const SizedBox(height: 20),
           TextFormField(
+            controller: dueDateCtrl,
+            validator: (value) {
+              if (value != null && isValidDate(value) == null) {
+                return 'Please enter the due date';
+              }
+
+              return null;
+            },
             decoration: const InputDecoration(
               labelText: 'Due date',
               counterText: '',
@@ -43,6 +73,7 @@ class _TodosFormState extends State<TodosForm> {
           ),
           const SizedBox(height: 20),
           TextFormField(
+            controller: descriptionCtrl,
             decoration: const InputDecoration(
               labelText: 'Description',
               counterText: '',
@@ -56,9 +87,7 @@ class _TodosFormState extends State<TodosForm> {
           SizedBox(
             width: double.infinity,
             child: CupertinoButton(
-              onPressed: () {
-                GoRouter.of(context).pop();
-              },
+              onPressed: submitForm,
               color: Colors.white,
               child: const Text(
                 'Save',

@@ -1,10 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo_auth_client/src/signin/signin.dart';
+import 'package:todo_auth_client/src/services/services.dart';
+import 'package:todo_auth_client/src/auth/auth.dart';
 
-class SigninScreen extends StatelessWidget {
-  const SigninScreen({super.key});
+class AuthScreen extends StatelessWidget {
+  const AuthScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        AuthRepository(GetIt.I<TodoRestService>()),
+      ),
+      child: const _AuthScreenView(
+        key: ValueKey('AuthScreenView'),
+      ),
+    );
+  }
+}
+
+class _AuthScreenView extends StatelessWidget {
+  const _AuthScreenView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +45,7 @@ class SigninScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 CupertinoButton(
                   onPressed: () {
-                    GoRouter.of(context).go('/signup');
+                    GoRouter.of(context).go('/register');
                   },
                   color: Colors.transparent,
                   padding: EdgeInsets.zero,

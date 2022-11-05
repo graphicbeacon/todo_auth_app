@@ -1,21 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo_auth_client/src/signin/signin.dart';
-import 'package:todo_auth_client/src/signup/signup.dart';
+import 'package:todo_auth_client/src/auth/auth.dart';
+import 'package:todo_auth_client/src/services/services.dart';
+import 'package:todo_auth_client/src/register/register.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
 
 class App extends StatelessWidget {
-  App({super.key});
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        AuthRepository(GetIt.I<TodoRestService>()),
+      ),
+      child: _AppView(key: const ValueKey('AppView')),
+    );
+  }
+}
+
+class _AppView extends StatelessWidget {
+  _AppView({super.key});
 
   final _router = GoRouter(
     routes: [
       GoRoute(
         path: "/",
-        builder: (context, state) => const SigninScreen(),
+        builder: (context, state) => const AuthScreen(),
         routes: [
           GoRoute(
-            path: "signup",
-            builder: (context, state) => const SignupScreen(),
+            path: "register",
+            builder: (context, state) => const RegisterScreen(),
           ),
         ],
       ),
@@ -72,6 +89,16 @@ class App extends StatelessWidget {
               width: 2,
             ),
             borderRadius: BorderRadius.circular(8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Colors.redAccent,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorStyle: const TextStyle(
+            color: Colors.orangeAccent,
           ),
         ),
       ),
