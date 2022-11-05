@@ -80,7 +80,7 @@ class TodoListItem extends StatelessWidget {
                 color: Colors.deepPurple,
               ),
               onPressed: () {
-                GoRouter.of(context).go('/todos/edit');
+                context.go('/todos/edit');
               },
             ),
           ],

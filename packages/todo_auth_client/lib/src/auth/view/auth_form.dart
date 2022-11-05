@@ -6,20 +6,21 @@ import 'package:todo_auth_client/src/auth/auth.dart';
 import 'package:todo_auth_client/src/core/core.dart';
 
 class SigninForm extends StatefulWidget {
-  const SigninForm({super.key});
+  const SigninForm({required this.formKey, super.key});
+
+  final GlobalKey<FormState> formKey;
 
   @override
   State<SigninForm> createState() => _SigninFormState();
 }
 
 class _SigninFormState extends State<SigninForm> {
-  final _formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   AutovalidateMode mode = AutovalidateMode.disabled;
 
   submitForm() async {
-    if (_formKey.currentState?.validate() == true) {
+    if (widget.formKey.currentState?.validate() == true) {
       final email = emailCtrl.text;
       final password = passwordCtrl.text;
 
@@ -35,6 +36,13 @@ class _SigninFormState extends State<SigninForm> {
   }
 
   @override
+  void dispose() {
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isSubmitting = context.select<AuthCubit, bool>(
       (b) => b.state.status == AuthRequest.requestInProgress,
@@ -43,7 +51,7 @@ class _SigninFormState extends State<SigninForm> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthRequest.requestSuccess && state.token != null) {
-          GoRouter.of(context).go('/todos');
+          context.go('/todos');
 
           showAlert(
             context,
@@ -60,7 +68,7 @@ class _SigninFormState extends State<SigninForm> {
         }
       },
       child: Form(
-        key: _formKey,
+        key: widget.formKey,
         autovalidateMode: mode,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

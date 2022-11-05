@@ -13,14 +13,14 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(state.copyWith(status: AuthRequest.requestInProgress));
 
-      final results = await repository.login(
+      final token = await repository.login(
         email: email,
         password: password,
       );
 
       emit(state.copyWith(
         status: AuthRequest.requestSuccess,
-        token: results,
+        token: token,
       ));
     } catch (_) {
       emit(state.copyWith(status: AuthRequest.requestFailure));

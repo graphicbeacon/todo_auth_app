@@ -8,7 +8,7 @@ class AddNewAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        GoRouter.of(context).push('/todos/new');
+        context.push('/todos/new');
       },
       child: Row(
         children: const [

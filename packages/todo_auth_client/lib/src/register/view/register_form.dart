@@ -39,6 +39,15 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   @override
+  void dispose() {
+    nameCtrl.dispose();
+    emailCtrl.dispose();
+    passwordCtrl.dispose();
+    repeatPasswordCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isSubmitting = context.select<RegisterCubit, bool>(
       (b) => b.state.status == RegisterRequest.requestInProgress,
@@ -54,7 +63,7 @@ class _RegisterFormState extends State<RegisterForm> {
             false,
           );
 
-          GoRouter.of(context).go('/');
+          context.go('/');
         }
 
         if (state.status == RegisterRequest.requestFailure) {

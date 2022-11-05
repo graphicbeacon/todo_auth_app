@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_auth_client/src/auth/auth.dart';
+import 'package:todo_auth_client/src/core/core.dart';
 import 'package:todo_auth_client/src/services/services.dart';
 import 'package:todo_auth_client/src/register/register.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
@@ -16,25 +17,38 @@ class App extends StatelessWidget {
       create: (context) => AuthCubit(
         AuthRepository(GetIt.I<TodoRestService>()),
       ),
-      child: _AppView(key: const ValueKey('AppView')),
+      child: const _AppView(key: ValueKey('AppView')),
     );
   }
 }
 
-class _AppView extends StatelessWidget {
-  _AppView({super.key});
+class _AppView extends StatefulWidget {
+  const _AppView({super.key});
 
+  @override
+  AppViewState createState() => AppViewState();
+}
+
+class AppViewState extends State<_AppView> {
   final _router = GoRouter(
     routes: [
       GoRoute(
         path: "/",
-        builder: (context, state) => const AuthScreen(),
+        builder: (context, state) => AuthScreen(),
         routes: [
           GoRoute(
             path: "register",
             builder: (context, state) => const RegisterScreen(),
           ),
         ],
+        redirect: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          if (authState.token != null) {
+            return '/todos';
+          }
+
+          return null;
+        },
       ),
       GoRoute(
         path: "/todos",
@@ -51,6 +65,14 @@ class _AppView extends StatelessWidget {
                 const TodosFormScreen(title: 'Edit Todo'),
           ),
         ],
+        redirect: (context, state) {
+          final authState = context.read<AuthCubit>().state;
+          if (authState.token == null) {
+            return '/';
+          }
+
+          return null;
+        },
       ),
     ],
   );
@@ -60,48 +82,7 @@ class _AppView extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
-      theme: ThemeData(
-        primaryColor: Colors.deepPurple,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.deepPurple,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          labelStyle: const TextStyle(
-            color: Colors.white,
-          ),
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.white,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.white,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.purpleAccent,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.redAccent,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          errorStyle: const TextStyle(
-            color: Colors.orangeAccent,
-          ),
-        ),
-      ),
+      theme: theme,
       title: 'Todo Auth App',
     );
   }

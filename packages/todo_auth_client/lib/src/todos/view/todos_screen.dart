@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
-import 'package:todo_auth_client/src/todos/widgets/add_new_action.dart';
-import 'package:todo_auth_client/src/todos/widgets/log_out_action.dart';
-import 'package:todo_auth_client/src/todos/widgets/todo_list_item.dart';
+import 'package:todo_auth_client/src/todos/view/add_new_action.dart';
+import 'package:todo_auth_client/src/todos/view/log_out_action.dart';
+import 'package:todo_auth_client/src/todos/view/todo_list_item.dart';
 
 class TodosScreen extends StatelessWidget {
   const TodosScreen({super.key});
