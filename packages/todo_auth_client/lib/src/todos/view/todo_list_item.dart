@@ -89,7 +89,10 @@ class TodoListItem extends StatelessWidget {
                 color: Colors.deepPurple,
               ),
               onPressed: () {
-                context.go('/todos/edit');
+                context.go(
+                  '/todos/edit',
+                  extra: {'id': data.id},
+                );
               },
             ),
           ],

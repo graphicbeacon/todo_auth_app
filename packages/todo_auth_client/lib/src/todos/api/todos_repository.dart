@@ -7,7 +7,7 @@ class TodosRepository {
   final TodoRestService service;
 
   Future<List<Todo>> getTodos(String token) {
-    return Future.value([
+    return Future.value(const [
       Todo(
         id: '1',
         title: 'Todo title 1',
@@ -46,7 +46,7 @@ class TodosRepository {
     required String token,
     required Todo todo,
   }) {
-    return Future.value(todo.copyWith(isUpdating: false));
+    return Future.value(todo);
   }
 
   Future<String> deleteTodo({

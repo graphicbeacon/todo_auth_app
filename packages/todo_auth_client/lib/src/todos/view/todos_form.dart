@@ -7,9 +7,9 @@ import 'package:todo_auth_client/src/core/core.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
 
 class TodosForm extends StatefulWidget {
-  const TodosForm({this.editId, super.key});
+  const TodosForm({this.data, super.key});
 
-  final String? editId;
+  final Todo? data;
 
   @override
   State<TodosForm> createState() => _TodosFormState();
@@ -17,10 +17,19 @@ class TodosForm extends StatefulWidget {
 
 class _TodosFormState extends State<TodosForm> {
   final _formKey = GlobalKey<FormState>();
-  final titleCtrl = TextEditingController();
-  final dueDateCtrl = TextEditingController();
-  final descriptionCtrl = TextEditingController();
+  late TextEditingController titleCtrl;
+  late TextEditingController dueDateCtrl;
+  late TextEditingController descriptionCtrl;
   AutovalidateMode mode = AutovalidateMode.disabled;
+
+  @override
+  void initState() {
+    super.initState();
+
+    titleCtrl = TextEditingController(text: widget.data?.title);
+    dueDateCtrl = TextEditingController(text: widget.data?.dueDate);
+    descriptionCtrl = TextEditingController(text: widget.data?.description);
+  }
 
   DateTime? isValidDate(String date) {
     final dateParts = date.trim().split('/').reversed;
@@ -37,7 +46,7 @@ class _TodosFormState extends State<TodosForm> {
 
       if (authState.token == null) return;
 
-      if (widget.editId == null) {
+      if (widget.data?.id == null) {
         // Creating new todo
         await context.read<TodosCubit>().createTodo(
               title: title,
@@ -55,7 +64,7 @@ class _TodosFormState extends State<TodosForm> {
           .read<TodosCubit>()
           .state
           .todos
-          .singleWhere((todo) => todo.id == widget.editId);
+          .singleWhere((todo) => todo.id == widget.data?.id);
 
       await context.read<TodosCubit>().updateTodo(
             token: authState.token!,

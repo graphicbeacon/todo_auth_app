@@ -75,8 +75,16 @@ class AppViewState extends State<_AppView> {
               ),
               GoRoute(
                 path: 'edit',
-                builder: (context, state) =>
-                    const TodosFormScreen(title: 'Edit Todo'),
+                builder: (context, state) {
+                  if (state.extra is! Map<String, dynamic>) {
+                    throw Exception('Missing required "id" parameter');
+                  }
+
+                  return TodosFormScreen(
+                    title: 'Edit Todo',
+                    editId: (state.extra as Map)['id'],
+                  );
+                },
               ),
             ],
             redirect: (context, state) {
