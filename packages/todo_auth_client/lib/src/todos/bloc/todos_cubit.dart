@@ -6,7 +6,7 @@ class TodosCubit extends Cubit<TodosState> {
 
   final TodosRepository repository;
 
-  getTodos(String token) async {
+  Future<void> getTodos(String token) async {
     try {
       emit(state.copyWith(status: TodosRequest.requestInProgress));
 
@@ -18,7 +18,7 @@ class TodosCubit extends Cubit<TodosState> {
     }
   }
 
-  createTodo({
+  Future<void> createTodo({
     required String token,
     required String title,
     String? dueDate,
@@ -45,7 +45,7 @@ class TodosCubit extends Cubit<TodosState> {
     }
   }
 
-  updateTodo({
+  Future<void> updateTodo({
     required String token,
     required Todo todo,
   }) async {
@@ -75,7 +75,7 @@ class TodosCubit extends Cubit<TodosState> {
     }
   }
 
-  deleteTodo({
+  Future<void> deleteTodo({
     required String token,
     required String id,
   }) async {
@@ -97,6 +97,8 @@ class TodosCubit extends Cubit<TodosState> {
         deleteItemStatus: TodosRequest.requestFailure,
         itemsToDelete: {...state.itemsToDelete}..remove(id),
       ));
+
+      emit(state.copyWith(deleteItemStatus: TodosRequest.unknown));
     }
   }
 }

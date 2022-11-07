@@ -93,7 +93,7 @@ class _TodosFormState extends State<TodosForm> {
         if (state.formStatus == TodosRequest.requestSuccess) {
           showAlert(
             context,
-            'Successfully updated todo',
+            widget.data != null ? 'Todo item updated' : 'Todo item added',
             false,
           );
 

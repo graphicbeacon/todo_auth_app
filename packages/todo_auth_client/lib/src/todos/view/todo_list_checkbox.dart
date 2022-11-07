@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class TodoListCheckbox extends StatefulWidget {
   const TodoListCheckbox({
     required this.isChecked,
+    required this.isDisabled,
     required this.onChanged,
     super.key,
   });
 
   final bool isChecked;
+  final bool isDisabled;
   final ValueChanged<bool?> onChanged;
 
   @override
@@ -29,12 +31,14 @@ class _TodoListCheckboxState extends State<TodoListCheckbox> {
     return Checkbox(
       value: _isChecked,
       fillColor: MaterialStateProperty.all(theme.primaryColor),
-      onChanged: (value) {
-        setState(() {
-          _isChecked = value;
-          widget.onChanged(value);
-        });
-      },
+      onChanged: widget.isDisabled
+          ? null
+          : (value) {
+              setState(() {
+                _isChecked = value;
+                widget.onChanged(value);
+              });
+            },
     );
   }
 }

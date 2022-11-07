@@ -360,6 +360,17 @@ void main() {
               ),
             ],
           ),
+          const TodosState(
+            deleteItemStatus: TodosRequest.unknown,
+            itemsToDelete: {},
+            todos: [
+              Todo(
+                id: '1',
+                title: 'todo title 1',
+                isComplete: false,
+              ),
+            ],
+          ),
         ],
       );
     });
