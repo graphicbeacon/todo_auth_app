@@ -33,11 +33,11 @@ class AppViewState extends State<_AppView> {
   final _router = GoRouter(
     routes: [
       GoRoute(
-        path: "/",
+        path: '/',
         builder: (context, state) => AuthScreen(),
         routes: [
           GoRoute(
-            path: "register",
+            path: 'register',
             builder: (context, state) => const RegisterScreen(),
           ),
         ],
@@ -50,29 +50,44 @@ class AppViewState extends State<_AppView> {
           return null;
         },
       ),
-      GoRoute(
-        path: "/todos",
-        builder: (context, state) => const TodosScreen(),
+      ShellRoute(
+        builder: (context, state, child) {
+          return BlocProvider(
+            create: (context) => TodosCubit(
+              TodosRepository(
+                GetIt.I<TodoRestService>(),
+              ),
+              const TodosState(),
+            ),
+            child: child,
+          );
+        },
         routes: [
           GoRoute(
-            path: "new",
-            builder: (context, state) =>
-                const TodosFormScreen(title: 'New Todo'),
-          ),
-          GoRoute(
-            path: "edit",
-            builder: (context, state) =>
-                const TodosFormScreen(title: 'Edit Todo'),
+            path: '/todos',
+            builder: (context, state) => const TodosScreen(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) =>
+                    const TodosFormScreen(title: 'New Todo'),
+              ),
+              GoRoute(
+                path: 'edit',
+                builder: (context, state) =>
+                    const TodosFormScreen(title: 'Edit Todo'),
+              ),
+            ],
+            redirect: (context, state) {
+              final authState = context.read<AuthCubit>().state;
+              if (authState.token == null) {
+                return '/';
+              }
+
+              return null;
+            },
           ),
         ],
-        redirect: (context, state) {
-          final authState = context.read<AuthCubit>().state;
-          if (authState.token == null) {
-            return '/';
-          }
-
-          return null;
-        },
       ),
     ],
   );

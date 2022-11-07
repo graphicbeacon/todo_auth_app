@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_auth_client/src/auth/auth.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
+import 'package:todo_auth_client/src/todos/view/todo_list_checkbox.dart';
 
 class TodoListItem extends StatelessWidget {
   const TodoListItem({required this.data, super.key});
@@ -10,8 +13,6 @@ class TodoListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -23,10 +24,18 @@ class TodoListItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Checkbox(
-              value: data.isComplete,
-              fillColor: MaterialStateProperty.all(theme.primaryColor),
-              onChanged: (value) {},
+            TodoListCheckbox(
+              isChecked: data.isComplete,
+              onChanged: (value) {
+                final authState = context.read<AuthCubit>().state;
+
+                if (authState.token == null) return;
+
+                context.read<TodosCubit>().updateTodo(
+                      token: authState.token!,
+                      todo: data.copyWith(isComplete: value ?? false),
+                    );
+              },
             ),
             const SizedBox(width: 10),
             Expanded(
