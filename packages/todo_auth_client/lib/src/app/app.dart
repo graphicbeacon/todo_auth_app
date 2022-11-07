@@ -16,6 +16,7 @@ class App extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthCubit(
         AuthRepository(GetIt.I<TodoRestService>()),
+        const AuthState(),
       ),
       child: const _AppView(key: ValueKey('AppView')),
     );

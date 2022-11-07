@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_auth_client/src/auth/auth.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this.repository) : super(AuthState());
+  AuthCubit(this.repository, super.initialState);
 
   final AuthRepository repository;
 
@@ -27,5 +27,5 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  reset() => emit(AuthState());
+  reset() => emit(const AuthState());
 }

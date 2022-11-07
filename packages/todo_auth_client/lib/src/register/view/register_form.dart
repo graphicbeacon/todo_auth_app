@@ -26,7 +26,7 @@ class _RegisterFormState extends State<RegisterForm> {
       final email = emailCtrl.text;
       final password = passwordCtrl.text;
 
-      await context.read<RegisterCubit>().createAccount(
+      await context.read<RegisterCubit>().registerAccount(
             name: name,
             email: email,
             password: password,

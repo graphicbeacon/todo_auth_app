@@ -1,5 +1,7 @@
-class RegisterState {
-  RegisterState({
+import 'package:equatable/equatable.dart';
+
+class RegisterState extends Equatable {
+  const RegisterState({
     this.status = RegisterRequest.unknown,
   });
 
@@ -8,6 +10,9 @@ class RegisterState {
   RegisterState copyWith({RegisterRequest? status}) => RegisterState(
         status: status ?? this.status,
       );
+
+  @override
+  List<RegisterRequest> get props => [status];
 }
 
 enum RegisterRequest {

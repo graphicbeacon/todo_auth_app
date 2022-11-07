@@ -1,5 +1,7 @@
-class AuthState {
-  AuthState({
+import 'package:equatable/equatable.dart';
+
+class AuthState extends Equatable {
+  const AuthState({
     this.status = AuthRequest.unknown,
     this.token,
   });
@@ -11,6 +13,9 @@ class AuthState {
         status: status ?? this.status,
         token: token ?? this.token,
       );
+
+  @override
+  List<Object?> get props => [status, token];
 }
 
 enum AuthRequest {
