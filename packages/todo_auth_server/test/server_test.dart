@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -20,20 +21,32 @@ void main() {
 
   tearDown(() => p.kill());
 
-  test('Root', () async {
-    final response = await get(Uri.parse('$host/'));
-    expect(response.statusCode, 200);
-    expect(response.body, 'Hello, World!\n');
-  });
+  group('/auth/', () {
+    test('/register succeeds', () async {
+      final response = await post(
+        Uri.parse('$host/auth/register'),
+        body: json.encode({
+          'name': 'Johnny',
+          'email': 'johnny@todo.com',
+          'password': 'password',
+        }),
+      );
+      expect(response.statusCode, 200);
+      expect(response.body, 'Registered');
+    });
 
-  test('Echo', () async {
-    final response = await get(Uri.parse('$host/echo/hello'));
-    expect(response.statusCode, 200);
-    expect(response.body, 'hello\n');
-  });
-
-  test('404', () async {
-    final response = await get(Uri.parse('$host/foobar'));
-    expect(response.statusCode, 404);
+    test('/register fails upon wrong payload', () async {
+      final response = await post(Uri.parse('$host/auth/register'));
+      final response2 = await post(
+        Uri.parse(
+          '$host/auth/register',
+        ),
+        body: json.encode({'name': '', 'email': '', 'password': ''}),
+      );
+      expect(response.statusCode, 400);
+      expect(response.body, 'Please provide your name, email and password');
+      expect(response2.statusCode, 400);
+      expect(response2.body, 'Please provide your name, email and password');
+    });
   });
 }

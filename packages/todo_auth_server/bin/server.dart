@@ -3,20 +3,10 @@ import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:todo_auth_server/todo_auth_server.dart';
 
 // Configure routes.
-final _router = Router()
-  ..get('/', _rootHandler)
-  ..get('/echo/<message>', _echoHandler);
-
-Response _rootHandler(Request req) {
-  return Response.ok('Hello, World!\n');
-}
-
-Response _echoHandler(Request request) {
-  final message = request.params['message'];
-  return Response.ok('$message\n');
-}
+final _router = Router()..mount('/auth/', AuthApi().router);
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
