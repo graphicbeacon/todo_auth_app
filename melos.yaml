@@ -12,7 +12,7 @@ scripts:
     run: |
       melos exec -c 6 --fail-fast -- \
       "dart pub global run coverage:test_with_coverage && genhtml coverage/lcov.info -o coverage/html"
-    description: Run all test and generate code coverage report
+    description: Run server tests and generate code coverage report
     select-package:
       scope: todo_auth_server
 
@@ -20,7 +20,7 @@ scripts:
     run: |
       melos exec -c 6 --fail-fast -- \
       "flutter test --coverage && genhtml coverage/lcov.info -o coverage/html"
-    description: Run all test and generate code coverage report
+    description: Run client tests and generate code coverage report
     select-package:
       scope: todo_auth_client
 
