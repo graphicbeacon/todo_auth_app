@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:todo_auth_server/todo_auth_server.dart';
 import 'package:uuid/uuid.dart';
 
 /// This store uses an in-memory database for the
@@ -28,7 +27,6 @@ class Store {
       'email': email,
       'password': password,
       'salt': salt,
-      'isComplete': false,
     });
   }
 
@@ -69,5 +67,60 @@ class Store {
 
     memoryDb['todos']!.add(newTodo);
     return newTodo;
+  }
+
+  ///
+  Map<String, dynamic>? updateTodo({
+    required String userId,
+    required String id,
+    String? title,
+    String? dueDate,
+    String? description,
+    bool? isComplete,
+  }) {
+    final todos = memoryDb['todos']!;
+    final currTodoIndex = todos.indexWhere(
+      (todo) => todo['userId'] == userId && todo['id'] == id,
+    );
+
+    if (currTodoIndex == -1) {
+      // Todo was not found
+      return null;
+    }
+
+    final currTodo = todos[currTodoIndex];
+    final updatedTodo = {
+      'id': currTodo['id'],
+      'userId': currTodo['userId'],
+      'title': title ?? currTodo['title'],
+      'dueDate': dueDate ?? currTodo['dueDate'],
+      'description': description ?? currTodo['description'],
+      'isComplete': isComplete ?? currTodo['isComplete'],
+    };
+    todos[currTodoIndex] = updatedTodo;
+
+    return updatedTodo;
+  }
+
+  ///
+  Map<String, dynamic>? deleteTodo({
+    required String userId,
+    required String id,
+  }) {
+    final todos = memoryDb['todos']!;
+    final currTodoIndex = todos.indexWhere(
+      (todo) => todo['userId'] == userId && todo['id'] == id,
+    );
+
+    if (currTodoIndex == -1) {
+      // Todo was not found
+      return null;
+    }
+
+    final deletedTodoId = todos[currTodoIndex]['id'];
+
+    todos.removeAt(currTodoIndex);
+
+    return {'id': deletedTodoId};
   }
 }

@@ -9,12 +9,12 @@ Future<Response> onRequest(RequestContext context) async {
   final info = json.decode(payload) as Map<String, dynamic>;
 
   // Validate payload data
-  if (['', null].contains(info['title'])) {
+  if (['', null].contains(info['id'])) {
     return Response.json(
       statusCode: HttpStatus.badRequest,
       body: {
         'code': TodoAuthResponseErrorCodes.invalidPayload.value,
-        'message': 'Please provide required data',
+        'message': 'Please provide todo id',
       },
     );
   }
@@ -32,16 +32,22 @@ Future<Response> onRequest(RequestContext context) async {
   }
 
   final userId = user.id;
-  final title = info['title'];
-  final dueDate = info['dueDate'];
-  final description = info['description'];
+  final id = info['id'];
 
-  final createdTodo = context.read<Store>().addTodo(
+  final deletedTodo = context.read<Store>().deleteTodo(
         userId: userId,
-        title: title as String,
-        dueDate: dueDate as String?,
-        description: description as String?,
+        id: id as String,
       );
 
-  return Response.json(body: createdTodo);
+  if (deletedTodo == null) {
+    return Response.json(
+      statusCode: HttpStatus.notFound,
+      body: {
+        'code': TodoAuthResponseErrorCodes.notFound.value,
+        'message': 'Not Found',
+      },
+    );
+  }
+
+  return Response.json(body: deletedTodo);
 }

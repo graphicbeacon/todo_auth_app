@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 import 'package:todo_auth_server/todo_auth_server.dart';
 
-import '../../../routes/todos/create.dart' as route;
+import '../../../routes/todos/update.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -14,7 +14,7 @@ void main() {
   late Store store;
 
   setUp(() {
-    store = store = Store()
+    store = Store()
       ..memoryDb['users']!.addAll([
         {
           'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
@@ -43,20 +43,22 @@ void main() {
       ]);
   });
 
-  group('/todos/create', () {
+  group('/todos/update', () {
     test('POST responds with 200', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
-        id: 'b58c03a4-5262-482d-8952-2182a5717875',
+        id: '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
         name: 'Johnny',
         email: 'johnny@todo.com',
       );
       final request = Request.post(
-        Uri.parse('http://localhost/todos/create'),
+        Uri.parse('http://localhost/todos/update'),
         body: json.encode({
+          'id': '1',
           'title': 'My other todo',
           'dueDate': '2022-11-11',
           'description': 'Lorem ipsum dolor',
+          'isComplete': true,
         }),
       );
 
@@ -69,19 +71,19 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['id'], matches('.+'));
+      expect(decodedBody['id'], matches('1'));
       expect(
         decodedBody['userId'],
-        equals('b58c03a4-5262-482d-8952-2182a5717875'),
+        equals('645dd7c5-dc1d-4b2d-9729-0174d3d08e91'),
       );
       expect(decodedBody['title'], equals('My other todo'));
       expect(decodedBody['dueDate'], equals('2022-11-11'));
       expect(decodedBody['description'], equals('Lorem ipsum dolor'));
-      expect(decodedBody['isComplete'], isFalse);
-      expect(store.memoryDb['todos']!.last['id'], matches('.+'));
+      expect(decodedBody['isComplete'], isTrue);
+      expect(store.memoryDb['todos']!.last['id'], equals('1'));
       expect(
         store.memoryDb['todos']!.last['userId'],
-        equals('b58c03a4-5262-482d-8952-2182a5717875'),
+        equals('645dd7c5-dc1d-4b2d-9729-0174d3d08e91'),
       );
       expect(
         store.memoryDb['todos']!.last['title'],
@@ -97,15 +99,45 @@ void main() {
       );
       expect(
         store.memoryDb['todos']!.last['isComplete'],
-        isFalse,
+        isTrue,
       );
     });
 
-    test('POST responds with a 401 if invalid payload', () async {
+    test('POST responds with 200 and null if todo does not exist', () async {
+      final context = _MockRequestContext();
+      const user = TodoAuthUser(
+        id: 'b58c03a4-5262-482d-8952-2182a5717875',
+        name: 'Charles',
+        email: 'charles@todo.com',
+      );
+      final request = Request.post(
+        Uri.parse('http://localhost/todos/update'),
+        body: json.encode({
+          'id': '1',
+          'title': 'My other todo',
+          'dueDate': '2022-11-11',
+          'description': 'Lorem ipsum dolor',
+          'isComplete': true,
+        }),
+      );
+
+      when(() => context.request).thenReturn(request);
+      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+
+      final response = await route.onRequest(context);
+      final body = await response.body();
+      final decodedBody = json.decode(body) as Map<String, dynamic>;
+
+      expect(response.statusCode, equals(HttpStatus.ok));
+      expect(decodedBody, equals({}));
+    });
+
+    test('POST responds with 401 if invalid payload', () async {
       final context = _MockRequestContext();
       final request = Request.post(
-        Uri.parse('http://localhost/todos/create'),
-        body: json.encode({'title': null}),
+        Uri.parse('http://localhost/todos/update'),
+        body: json.encode({'id': '', 'title': null}),
       );
 
       when(() => context.request).thenReturn(request);
@@ -123,7 +155,7 @@ void main() {
       final context = _MockRequestContext();
       final request = Request.post(
         Uri.parse('http://localhost/todos/create'),
-        body: json.encode({'title': 'my todo'}),
+        body: json.encode({'id': '1', 'title': 'my todo'}),
       );
 
       when(() => context.request).thenReturn(request);

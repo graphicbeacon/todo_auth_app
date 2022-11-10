@@ -23,7 +23,6 @@ void main() {
           'password':
               '0083b3ecada67c5d9608ca9aab4a9cbf19f7ca453fa56e3789320d0013feb7a0',
           'salt': 'JISxNzVFqP0ensZHYIVboSZNWt6npZSm5ZqCmc/xiXU=',
-          'isComplete': false,
         },
         {
           'id': 'b58c03a4-5262-482d-8952-2182a5717875',
@@ -32,7 +31,6 @@ void main() {
           'password':
               '0c3b694765288d7f6a445c6f2daf1458257ddc1de7e572599235ffce43ee4c9a',
           'salt': 'RzpV0Nqc9s8HWV8yUtOIkdTz+9PoZEslawCPsqeG7oo=',
-          'isComplete': false,
         },
       ])
       ..memoryDb['todos']!.addAll([
@@ -63,17 +61,16 @@ void main() {
   group('/todos/list', () {
     test('POST responds with a 200 and todos', () async {
       final context = _MockRequestContext();
-      final token = generateJwt(
-        subject: '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
-        issuer: TodoAuthServerConstants.jwtIssuer,
-        secret: TodoAuthServerConstants.jwtSecretKey,
+      const user = TodoAuthUser(
+        id: '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
+        name: 'Johnny',
+        email: 'johnny@todo.com',
       );
-      final request = Request.post(
-        Uri.parse('http://localhost/todos/list'),
-        body: json.encode({'token': token}),
-      );
+      final request = Request.post(Uri.parse('http://localhost/todos/list'));
+
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -105,17 +102,15 @@ void main() {
 
     test('POST responds with a 200 and other todos', () async {
       final context = _MockRequestContext();
-      final token = generateJwt(
-        subject: 'b58c03a4-5262-482d-8952-2182a5717875',
-        issuer: TodoAuthServerConstants.jwtIssuer,
-        secret: TodoAuthServerConstants.jwtSecretKey,
+      const user = TodoAuthUser(
+        id: 'b58c03a4-5262-482d-8952-2182a5717875',
+        name: 'Johnny',
+        email: 'johnny@todo.com',
       );
-      final request = Request.post(
-        Uri.parse('http://localhost/todos/list'),
-        body: json.encode({'token': token}),
-      );
+      final request = Request.post(Uri.parse('http://localhost/todos/list'));
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -138,30 +133,10 @@ void main() {
       );
     });
 
-    test('POST responds with a 401 if invalid payload', () async {
+    test('POST responds with a 401 if empty user', () async {
       final context = _MockRequestContext();
-      final request = Request.post(
-        Uri.parse('http://localhost/auth/user'),
-        body: json.encode({'token': ''}),
-      );
-      when(() => context.request).thenReturn(request);
-      when(() => context.read<Store>()).thenReturn(store);
+      final request = Request.post(Uri.parse('http://localhost/auth/user'));
 
-      final response = await route.onRequest(context);
-      final body = await response.body();
-      final decodedBody = json.decode(body) as Map<String, dynamic>;
-
-      expect(response.statusCode, equals(HttpStatus.badRequest));
-      expect(decodedBody['code'], equals('INVALID_PAYLOAD'));
-      expect(decodedBody['message'], equals('Please provide a valid token'));
-    });
-
-    test('POST responds with a 401 if invalid jwt token', () async {
-      final context = _MockRequestContext();
-      final request = Request.post(
-        Uri.parse('http://localhost/auth/user'),
-        body: json.encode({'token': 'invalid jwt'}),
-      );
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
 
@@ -177,6 +152,7 @@ void main() {
     test('other than POST responds with empty string', () async {
       final context = _MockRequestContext();
       final request = Request.get(Uri.parse('http://localhost/todos/list'));
+
       when(() => context.request).thenReturn(request);
 
       final response = await route.onRequest(context);

@@ -19,11 +19,17 @@ enum TodoAuthResponseErrorCodes {
   invalidCredentials('INVALID_CREDENTIALS'),
 
   ///
-  userAlreadyExists('USER_ALREADY_EXISTS');
+  userAlreadyExists('USER_ALREADY_EXISTS'),
+
+  ///
+  notFound('RESOURCE_NOT_FOUND');
 
   ///
   const TodoAuthResponseErrorCodes(this.value);
 
   ///
   final String value;
+
+  @override
+  String toString() => value;
 }

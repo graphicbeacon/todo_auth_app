@@ -7,9 +7,10 @@ import 'package:todo_auth_server/todo_auth_server.dart';
 Future<Response> onRequest(RequestContext context) async {
   final payload = await context.request.body();
   final info = json.decode(payload) as Map<String, dynamic>;
+  final fields = [info['id'], info['title']];
 
   // Validate payload data
-  if (['', null].contains(info['title'])) {
+  if (fields.contains('') || fields.contains(null)) {
     return Response.json(
       statusCode: HttpStatus.badRequest,
       body: {
@@ -32,16 +33,20 @@ Future<Response> onRequest(RequestContext context) async {
   }
 
   final userId = user.id;
+  final id = info['id'];
   final title = info['title'];
   final dueDate = info['dueDate'];
   final description = info['description'];
+  final isComplete = info['isComplete'];
 
-  final createdTodo = context.read<Store>().addTodo(
+  final updatedTodo = context.read<Store>().updateTodo(
         userId: userId,
+        id: id as String,
         title: title as String,
         dueDate: dueDate as String?,
         description: description as String?,
+        isComplete: isComplete as bool?,
       );
 
-  return Response.json(body: createdTodo);
+  return Response.json(body: updatedTodo ?? {});
 }

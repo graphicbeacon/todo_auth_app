@@ -27,7 +27,7 @@ void main() {
       when(() => context.read<Store>()).thenReturn(store);
 
       final response = await route.onRequest(context);
-      print(store.memoryDb['users']);
+
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(store.memoryDb['users']![0], isMap);
       expect(store.memoryDb['users']![0]['id'], matches(RegExp('.+')));
@@ -35,7 +35,6 @@ void main() {
       expect(store.memoryDb['users']![0]['email'], equals('johnny@todo.com'));
       expect(store.memoryDb['users']![0]['salt'], matches(RegExp('.+')));
       expect(store.memoryDb['users']![0]['password'], matches(RegExp('.+')));
-      expect(store.memoryDb['users']![0]['isComplete'], isFalse);
       expect(
         response.body(),
         completion(equals(json.encode({'message': 'Registered successfully'}))),
