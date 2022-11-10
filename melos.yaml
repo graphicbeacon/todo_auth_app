@@ -8,9 +8,26 @@ scripts:
   analyze:
     exec: dart analyze .
 
-  test:all:
-    exec: dart pub global run coverage:test_with_coverage
+  test:server:coverage:
+    run: |
+      melos exec -c 6 --fail-fast -- \
+      "dart pub global run coverage:test_with_coverage && genhtml coverage/lcov.info -o coverage/html"
     description: Run all test and generate code coverage report
+    select-package:
+      scope: todo_auth_server
+
+  test:client:coverage:
+    run: |
+      melos exec -c 6 --fail-fast -- \
+      "flutter test --coverage && genhtml coverage/lcov.info -o coverage/html"
+    description: Run all test and generate code coverage report
+    select-package:
+      scope: todo_auth_client
+
+  test:all:
+    run: |
+      melos run test:server:coverage && \
+      melos run test:client:coverage
 
   start:client:
     exec: flutter run

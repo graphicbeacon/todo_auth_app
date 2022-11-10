@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:todo_auth_server/todo_auth_server.dart';
@@ -7,17 +5,16 @@ import 'package:todo_auth_server/todo_auth_server.dart';
 /// Verify JWT and retrieve user object
 Middleware asyncUserProvider() {
   return provider<Future<TodoAuthUser>>((context) async {
-    final payload = await context.request.body();
+    final authHeader = context.request.headers['Authorization'];
 
-    if (payload.isEmpty) {
+    if (authHeader == null) {
       return TodoAuthUser.empty();
     }
 
     try {
-      final info = json.decode(payload) as Map<String, dynamic>;
-      final token = info['token'];
+      final bearer = authHeader.replaceAll('Bearer ', '');
       final verifiedToken = JWT.verify(
-        token as String,
+        bearer,
         SecretKey(TodoAuthServerConstants.jwtSecretKey),
       );
       final user = context.read<Store>().getUserById(verifiedToken.subject);

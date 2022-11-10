@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 /// Represents a logged in user
-class TodoAuthUser {
+class TodoAuthUser extends Equatable {
   ///
   const TodoAuthUser({
     required this.id,
@@ -25,4 +27,7 @@ class TodoAuthUser {
 
   ///
   bool get isEmpty => [id, name, email].every((field) => field.isEmpty);
+
+  @override
+  List<String> get props => [id, name, email];
 }
