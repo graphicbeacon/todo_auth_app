@@ -9,6 +9,14 @@ class Todo extends Equatable {
     this.description,
   });
 
+  factory Todo.fromJson(Map json) => Todo(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        isComplete: json['isComplete'] as bool,
+        dueDate: json['dueDate'],
+        description: json['description'],
+      );
+
   final String id;
   final String title;
   final bool isComplete;

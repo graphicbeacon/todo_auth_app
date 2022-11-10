@@ -48,5 +48,5 @@ Future<Response> onRequest(RequestContext context) async {
     );
   }
 
-  return Response.json(body: deletedTodo);
+  return Response.json(body: {'data': deletedTodo});
 }

@@ -30,7 +30,7 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['message'], equals('Johnny'));
+      expect(decodedBody['data'], equals('Johnny'));
     });
 
     test('POST responds with a 401 if user does not exist', () async {

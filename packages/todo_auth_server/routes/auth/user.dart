@@ -21,5 +21,5 @@ Future<Response> onRequest(RequestContext context) async {
   }
 
   // All good
-  return Response.json(body: {'message': user.name});
+  return Response.json(body: {'data': user.name});
 }

@@ -23,5 +23,5 @@ Future<Response> onRequest(RequestContext context) async {
 
   // All good
   final todos = context.read<Store>().getTodos(user.id);
-  return Response.json(body: {'message': todos});
+  return Response.json(body: {'data': todos});
 }

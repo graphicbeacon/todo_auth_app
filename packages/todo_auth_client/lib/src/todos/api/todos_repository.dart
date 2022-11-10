@@ -6,23 +6,9 @@ class TodosRepository {
 
   final TodoRestService service;
 
-  Future<List<Todo>> getTodos(String token) {
-    return Future.value(const [
-      Todo(
-        id: '1',
-        title: 'Todo title 1',
-        isComplete: false,
-        description: 'Todo description',
-        dueDate: '2022-11-11',
-      ),
-      Todo(
-        id: '2',
-        title: 'Todo title 2',
-        isComplete: true,
-        description: 'Todo description',
-        dueDate: '2022-11-13',
-      ),
-    ]);
+  Future<List<Todo>> getTodos(String token) async {
+    final response = await service.getTodos(token);
+    return response.map((todo) => Todo.fromJson(todo)).toList();
   }
 
   Future<Todo> createTodo({
@@ -30,29 +16,38 @@ class TodosRepository {
     required String title,
     String? dueDate,
     String? description,
-  }) {
-    return Future.value(
-      Todo(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: title,
-        dueDate: dueDate,
-        description: description,
-        isComplete: false,
-      ),
+  }) async {
+    final response = await service.createTodo(
+      title: title,
+      token: token,
+      dueDate: dueDate,
+      description: description,
     );
+    return Todo.fromJson(response);
   }
 
   Future<Todo> updateTodo({
     required String token,
     required Todo todo,
-  }) {
-    return Future.value(todo);
+  }) async {
+    final response = await service.updateTodo(
+      id: todo.id,
+      token: token,
+      title: todo.title,
+      dueDate: todo.dueDate,
+      description: todo.description,
+    );
+    return Todo.fromJson(response);
   }
 
   Future<String> deleteTodo({
     required String token,
     required String id,
-  }) {
-    return Future.value(id);
+  }) async {
+    final response = await service.deleteTodo(
+      id: id,
+      token: token,
+    );
+    return response['id'];
   }
 }

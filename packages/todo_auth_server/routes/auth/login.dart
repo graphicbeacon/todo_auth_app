@@ -57,5 +57,5 @@ Future<Response> onRequest(RequestContext context) async {
     secret: TodoAuthServerConstants.jwtSecretKey,
   );
 
-  return Response.json(body: {'message': token});
+  return Response.json(body: {'data': token});
 }

@@ -62,7 +62,7 @@ class TodoListItem extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (data.dueDate != null) ...[
+                    if (data.dueDate?.isNotEmpty == true) ...[
                       const SizedBox(height: 5),
                       Row(
                         children: [
@@ -79,8 +79,8 @@ class TodoListItem extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 10),
                     ],
-                    const SizedBox(height: 10),
                     if (data.description != null)
                       Text(
                         data.description!,

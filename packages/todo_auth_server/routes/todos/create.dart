@@ -43,5 +43,5 @@ Future<Response> onRequest(RequestContext context) async {
         description: description as String?,
       );
 
-  return Response.json(body: createdTodo);
+  return Response.json(body: {'data': createdTodo});
 }

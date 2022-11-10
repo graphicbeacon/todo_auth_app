@@ -14,7 +14,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     try {
       emit(state.copyWith(status: RegisterRequest.requestInProgress));
 
-      await repository.createAccount(
+      await repository.registerAccount(
         name: name,
         email: email,
         password: password,

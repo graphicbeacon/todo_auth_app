@@ -49,9 +49,5 @@ Future<Response> onRequest(RequestContext context) async {
         salt: salt,
       );
 
-  return Response.json(
-    body: {
-      'message': 'Registered successfully',
-    },
-  );
+  return Response.json(body: {'data': 'Registered successfully'});
 }

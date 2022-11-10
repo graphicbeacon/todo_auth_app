@@ -8,14 +8,11 @@ class MockRegisterRepository extends Mock implements RegisterRepository {}
 void main() {
   group('RegisterCubit', () {
     late MockRegisterRepository mockApi;
-    late RegisterCubit Function([RegisterState]) genRegisterCubit;
+    late RegisterCubit Function() genRegisterCubit;
 
     setUp(() {
       mockApi = MockRegisterRepository();
-      genRegisterCubit = ([RegisterState? initialState]) => RegisterCubit(
-            mockApi,
-            // initialState ?? const RegisterState(),
-          );
+      genRegisterCubit = () => RegisterCubit(mockApi);
     });
 
     test('initial state is RegisterState', () {
@@ -27,11 +24,11 @@ void main() {
         'emits success when invoked',
         build: () => genRegisterCubit(),
         act: (bloc) async {
-          when(() => mockApi.createAccount(
+          when(() => mockApi.registerAccount(
                 name: 'New user',
                 email: 'auth@todo.com',
                 password: 'password',
-              )).thenAnswer((_) async => {});
+              )).thenAnswer((_) async => '');
 
           await bloc.registerAccount(
             name: 'New user',
@@ -49,7 +46,7 @@ void main() {
         'emits failure when invoked',
         build: () => genRegisterCubit(),
         act: (bloc) async {
-          when(() => mockApi.createAccount(
+          when(() => mockApi.registerAccount(
                 name: 'New user',
                 email: 'auth@todo.com',
                 password: 'password',

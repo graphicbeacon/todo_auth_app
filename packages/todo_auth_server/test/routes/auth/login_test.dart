@@ -47,7 +47,7 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['message'], matches(RegExp('.+')));
+      expect(decodedBody['data'], matches(RegExp('.+')));
     });
 
     test('POST responds with a 401 if invalid payload', () async {

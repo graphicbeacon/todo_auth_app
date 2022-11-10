@@ -85,7 +85,7 @@ void main() {
 
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(
-        decodedBody['message'],
+        decodedBody['data'],
         equals(
           [
             {
@@ -126,7 +126,7 @@ void main() {
 
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(
-        decodedBody['message'],
+        decodedBody['data'],
         equals(
           [
             {

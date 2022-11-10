@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_auth_client/src/auth/auth.dart';
 import 'package:todo_auth_client/src/core/core.dart';
 import 'package:todo_auth_client/src/register/register.dart';
 

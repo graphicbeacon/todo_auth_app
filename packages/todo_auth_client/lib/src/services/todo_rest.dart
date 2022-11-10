@@ -1,25 +1,88 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:todo_auth_client/src/core/core.dart';
+
 class TodoRestService {
-  Future<String> createUser() {
-    return Future.value('');
+  Dio client = Dio(BaseOptions(
+    baseUrl: '${TodoAuthAppConstants.serverUrl}/',
+    headers: {
+      'Content-Type': ContentType.json.mimeType,
+    },
+  ));
+
+  Future<String> registerAccount({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    client.options.headers.remove('Authorization');
+    final response = await client.post('auth/register', data: {
+      'name': name,
+      'email': email,
+      'password': password,
+    });
+    return response.data['data'];
   }
 
-  Future<String> authenticateUser() {
-    return Future.value('');
+  Future<String> login({
+    required String email,
+    required String password,
+  }) async {
+    client.options.headers.remove('Authorization');
+    final response = await client.post('auth/login', data: {
+      'email': email,
+      'password': password,
+    });
+    return response.data['data'];
   }
 
-  Future<Map<String, dynamic>> createTodo() {
-    return Future.value({});
+  Future<Map<String, dynamic>> createTodo({
+    required String title,
+    required String token,
+    required String? dueDate,
+    required String? description,
+  }) async {
+    client.options.headers['Authorization'] = 'Bearer $token';
+    final response = await client.post('todos/create', data: {
+      'title': title,
+      'dueDate': dueDate,
+      'description': description,
+    });
+    return response.data['data'];
   }
 
-  Future<List<Map<String, dynamic>>> readTodo() {
-    return Future.value([]);
+  Future<List<Map<String, dynamic>>> getTodos(String token) async {
+    client.options.headers['Authorization'] = 'Bearer $token';
+    final response = await client.post('todos/list');
+    return (response.data['data'] as List)
+        .map((data) => data as Map<String, dynamic>)
+        .toList();
   }
 
-  Future<Map<String, dynamic>> updateTodo() {
-    return Future.value({});
+  Future<Map<String, dynamic>> updateTodo({
+    required String id,
+    required String token,
+    String? title,
+    String? dueDate,
+    String? description,
+  }) async {
+    client.options.headers['Authorization'] = 'Bearer $token';
+    final response = await client.post('todos/update', data: {
+      'id': id,
+      'title': title,
+      'dueDate': dueDate,
+      'description': description,
+    });
+    return response.data['data'];
   }
 
-  Future<Map<String, dynamic>> deleteTodo(String id) {
-    return Future.value({});
+  Future<Map<String, dynamic>> deleteTodo({
+    required String id,
+    required String token,
+  }) async {
+    client.options.headers['Authorization'] = 'Bearer $token';
+    final response = await client.post('todos/delete', data: {'id': id});
+    return response.data['data'];
   }
 }

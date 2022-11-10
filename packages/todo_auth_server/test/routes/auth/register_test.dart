@@ -46,7 +46,7 @@ void main() {
       expect(store.memoryDb['users']![0]['password'], matches(RegExp('.+')));
       expect(
         response.body(),
-        completion(equals(json.encode({'message': 'Registered successfully'}))),
+        completion(equals(json.encode({'data': 'Registered successfully'}))),
       );
     });
 

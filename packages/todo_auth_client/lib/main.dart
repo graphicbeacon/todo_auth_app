@@ -6,5 +6,5 @@ import 'package:todo_auth_client/src/services/todo_rest.dart';
 void main() {
   GetIt.I.registerSingleton<TodoRestService>(TodoRestService());
 
-  runApp(App());
+  runApp(const App());
 }

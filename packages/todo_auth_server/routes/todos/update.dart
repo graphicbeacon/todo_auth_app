@@ -47,5 +47,15 @@ Future<Response> onRequest(RequestContext context) async {
         isComplete: isComplete as bool?,
       );
 
-  return Response.json(body: updatedTodo ?? {});
+  if (updatedTodo == null) {
+    return Response.json(
+      statusCode: HttpStatus.notFound,
+      body: {
+        'code': TodoAuthResponseErrorCodes.notFound.value,
+        'message': 'Not Found',
+      },
+    );
+  }
+
+  return Response.json(body: {'data': updatedTodo});
 }

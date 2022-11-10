@@ -76,17 +76,18 @@ void main() {
       final response = await route.onRequest(context);
       final body = await response.body();
       final decodedBody = json.decode(body) as Map<String, dynamic>;
+      final decodedData = decodedBody['data'] as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['id'], matches('1'));
+      expect(decodedData['id'], matches('1'));
       expect(
-        decodedBody['userId'],
+        decodedData['userId'],
         equals('645dd7c5-dc1d-4b2d-9729-0174d3d08e91'),
       );
-      expect(decodedBody['title'], equals('My other todo'));
-      expect(decodedBody['dueDate'], equals('2022-11-11'));
-      expect(decodedBody['description'], equals('Lorem ipsum dolor'));
-      expect(decodedBody['isComplete'], isTrue);
+      expect(decodedData['title'], equals('My other todo'));
+      expect(decodedData['dueDate'], equals('2022-11-11'));
+      expect(decodedData['description'], equals('Lorem ipsum dolor'));
+      expect(decodedData['isComplete'], isTrue);
       expect(store.memoryDb['todos']!.last['id'], equals('1'));
       expect(
         store.memoryDb['todos']!.last['userId'],
@@ -110,7 +111,7 @@ void main() {
       );
     });
 
-    test('POST responds with 200 and null if todo does not exist', () async {
+    test('POST responds with 404 if resource does not exist', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
         id: 'b58c03a4-5262-482d-8952-2182a5717875',
@@ -137,8 +138,9 @@ void main() {
       final body = await response.body();
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
-      expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody, equals({}));
+      expect(response.statusCode, equals(HttpStatus.notFound));
+      expect(decodedBody['code'], equals('RESOURCE_NOT_FOUND'));
+      expect(decodedBody['message'], equals('Not Found'));
     });
 
     test('POST responds with 401 if invalid payload', () async {

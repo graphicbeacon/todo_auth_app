@@ -5,11 +5,15 @@ class RegisterRepository {
 
   final TodoRestService service;
 
-  Future createAccount({
+  Future<String> registerAccount({
     required String name,
     required String email,
     required String password,
-  }) {
-    return Future.value({});
+  }) async {
+    return service.registerAccount(
+      name: name,
+      email: email,
+      password: password,
+    );
   }
 }

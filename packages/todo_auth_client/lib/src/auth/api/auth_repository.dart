@@ -9,6 +9,9 @@ class AuthRepository {
     required String email,
     required String password,
   }) {
-    return Future.value('login in token');
+    return service.login(
+      email: email,
+      password: password,
+    );
   }
 }

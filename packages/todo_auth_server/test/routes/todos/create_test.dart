@@ -74,17 +74,18 @@ void main() {
       final response = await route.onRequest(context);
       final body = await response.body();
       final decodedBody = json.decode(body) as Map<String, dynamic>;
+      final decodedData = decodedBody['data'] as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['id'], matches('.+'));
+      expect(decodedData['id'], matches('.+'));
       expect(
-        decodedBody['userId'],
+        decodedData['userId'],
         equals('b58c03a4-5262-482d-8952-2182a5717875'),
       );
-      expect(decodedBody['title'], equals('My other todo'));
-      expect(decodedBody['dueDate'], equals('2022-11-11'));
-      expect(decodedBody['description'], equals('Lorem ipsum dolor'));
-      expect(decodedBody['isComplete'], isFalse);
+      expect(decodedData['title'], equals('My other todo'));
+      expect(decodedData['dueDate'], equals('2022-11-11'));
+      expect(decodedData['description'], equals('Lorem ipsum dolor'));
+      expect(decodedData['isComplete'], isFalse);
       expect(store.memoryDb['todos']!.last['id'], matches('.+'));
       expect(
         store.memoryDb['todos']!.last['userId'],

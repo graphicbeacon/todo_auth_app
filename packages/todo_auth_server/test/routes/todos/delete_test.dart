@@ -70,7 +70,7 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody, equals({'id': '1'}));
+      expect(decodedBody['data'], equals({'id': '1'}));
       expect(store.memoryDb['todos'], equals([]));
     });
 
