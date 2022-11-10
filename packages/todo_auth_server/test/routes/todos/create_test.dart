@@ -14,7 +14,7 @@ void main() {
   late Store store;
 
   setUp(() {
-    store = store = Store()
+    store = Store()
       ..memoryDb['users']!.addAll([
         {
           'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
@@ -43,6 +43,12 @@ void main() {
       ]);
   });
 
+  tearDown(() {
+    store
+      ..memoryDb['users']!.clear()
+      ..memoryDb['todos']!.clear();
+  });
+
   group('/todos/create', () {
     test('POST responds with 200', () async {
       final context = _MockRequestContext();
@@ -62,7 +68,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -127,6 +134,8 @@ void main() {
       );
 
       when(() => context.request).thenReturn(request);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => TodoAuthUser.empty());
 
       final response = await route.onRequest(context);
       final body = await response.body();

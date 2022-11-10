@@ -8,8 +8,8 @@ Future<Response> onRequest(RequestContext context) async {
     return Response(body: '');
   }
 
-  final user = context.read<TodoAuthUser?>();
-  if (user == null) {
+  final user = context.read<TodoAuthUser>();
+  if (user.isEmpty) {
     // User does not exist or jwt is invalid
     return Response.json(
       statusCode: HttpStatus.unauthorized,

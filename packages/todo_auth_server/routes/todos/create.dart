@@ -19,9 +19,9 @@ Future<Response> onRequest(RequestContext context) async {
     );
   }
 
-  final user = context.read<TodoAuthUser?>();
+  final user = await context.read<Future<TodoAuthUser>>();
 
-  if (user == null) {
+  if (user.isEmpty) {
     return Response.json(
       statusCode: HttpStatus.unauthorized,
       body: {

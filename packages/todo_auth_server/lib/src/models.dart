@@ -8,6 +8,13 @@ class TodoAuthUser {
   });
 
   ///
+  factory TodoAuthUser.empty() => const TodoAuthUser(
+        id: '',
+        name: '',
+        email: '',
+      );
+
+  ///
   final String id;
 
   ///
@@ -15,4 +22,7 @@ class TodoAuthUser {
 
   ///
   final String email;
+
+  ///
+  bool get isEmpty => [id, name, email].every((field) => field.isEmpty);
 }

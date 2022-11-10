@@ -20,16 +20,16 @@ void main() {
           'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
           'name': 'Johnny',
           'email': 'johnny@todo.com',
-          'password':
-              '0083b3ecada67c5d9608ca9aab4a9cbf19f7ca453fa56e3789320d0013feb7a0',
+          'password': '0083b3ecada67c5d9608ca9aab4a9cb'
+              'f19f7ca453fa56e3789320d0013feb7a0',
           'salt': 'JISxNzVFqP0ensZHYIVboSZNWt6npZSm5ZqCmc/xiXU=',
         },
         {
           'id': 'b58c03a4-5262-482d-8952-2182a5717875',
           'name': 'Charles',
           'email': 'charles@todo.com',
-          'password':
-              '0c3b694765288d7f6a445c6f2daf1458257ddc1de7e572599235ffce43ee4c9a',
+          'password': '0c3b694765288d7f6a445c6f2daf1458'
+              '257ddc1de7e572599235ffce43ee4c9a',
           'salt': 'RzpV0Nqc9s8HWV8yUtOIkdTz+9PoZEslawCPsqeG7oo=',
         },
       ])
@@ -58,6 +58,12 @@ void main() {
       ]);
   });
 
+  tearDown(() {
+    store
+      ..memoryDb['users']!.clear()
+      ..memoryDb['todos']!.clear();
+  });
+
   group('/todos/list', () {
     test('POST responds with a 200 and todos', () async {
       final context = _MockRequestContext();
@@ -70,7 +76,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -110,7 +117,8 @@ void main() {
       final request = Request.post(Uri.parse('http://localhost/todos/list'));
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -139,6 +147,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => TodoAuthUser.empty());
 
       final response = await route.onRequest(context);
       final body = await response.body();

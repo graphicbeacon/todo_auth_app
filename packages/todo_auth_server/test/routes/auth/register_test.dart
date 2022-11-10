@@ -12,9 +12,18 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 void main() {
   group('/auth/register', () {
+    late Store store;
+
+    setUp(() {
+      store = Store();
+    });
+
+    tearDown(() {
+      store.memoryDb['users']!.clear();
+    });
+
     test('POST responds with a 200 and message', () async {
       final context = _MockRequestContext();
-      final store = Store();
       final request = Request.post(
         Uri.parse('http://localhost/auth/register'),
         body: json.encode({
@@ -73,10 +82,6 @@ void main() {
     test('POST responds with 400 and code/message if user already exists',
         () async {
       final context = _MockRequestContext();
-      final store = Store()
-        ..memoryDb['users']!.add(
-          {'email': 'johnny@todo.com'},
-        );
       final request = Request.post(
         Uri.parse('http://localhost/auth/register'),
         body: json.encode({
@@ -86,6 +91,8 @@ void main() {
         }),
       );
       when(() => context.request).thenReturn(request);
+
+      store.memoryDb['users']!.add({'email': 'johnny@todo.com'});
       when(() => context.read<Store>()).thenReturn(store);
 
       final response = await route.onRequest(context);

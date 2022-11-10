@@ -43,6 +43,10 @@ void main() {
       ]);
   });
 
+  tearDown(() {
+    store.memoryDb['users']!.clear();
+  });
+
   group('/todos/delete', () {
     test('POST responds with 200', () async {
       final context = _MockRequestContext();
@@ -58,7 +62,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -69,7 +74,7 @@ void main() {
       expect(store.memoryDb['todos'], equals([]));
     });
 
-    test('POST responds with 404 if todo does not exist', () async {
+    test('POST responds with 404 if resource does not exist', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
         id: 'b58c03a4-5262-482d-8952-2182a5717875',
@@ -83,7 +88,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser?>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -120,6 +126,8 @@ void main() {
       );
 
       when(() => context.request).thenReturn(request);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => TodoAuthUser.empty());
 
       final response = await route.onRequest(context);
       final body = await response.body();

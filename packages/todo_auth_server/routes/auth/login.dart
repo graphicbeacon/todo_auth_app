@@ -28,6 +28,7 @@ Future<Response> onRequest(RequestContext context) async {
 
   // Get user and validate
   final user = context.read<Store>().getUserByEmail(email);
+
   if (user.isEmpty) {
     return Response.json(
       statusCode: HttpStatus.forbidden,

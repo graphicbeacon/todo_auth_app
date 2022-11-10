@@ -3,9 +3,44 @@ name: todo_auth_app
 packages:
   - packages/**
 
+# Run with `melos run [name-of-script]`
 scripts:
   analyze:
     exec: dart analyze .
+
+  test:all:
+    exec: dart pub global run coverage:test_with_coverage
+    description: Run all test and generate code coverage report
+
+  start:client:
+    exec: flutter run
+    description: Run Flutter project in local simulator
+    select-package:
+      scope: todo_auth_client
+
+  build:client:android:
+    exec: flutter build apk
+    description: Build Flutter app for Android device
+    select-package:
+      scope: todo_auth_client
+
+  build:client:ios:
+    exec: flutter build ios
+    description: Build Flutter app for iOS device
+    select-package:
+      scope: todo_auth_client
+  
+  start:server:
+    exec: dart_frog dev
+    description: Run server project locally with Hot reload
+    select-package:
+      scope: todo_auth_server
+  
+  build:server:
+    exec: dart_frog build
+    description: Build server project for deployment
+    select-package:
+      scope: todo_auth_server
 
 command:
   bootstrap:

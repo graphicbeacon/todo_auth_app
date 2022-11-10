@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
@@ -9,9 +8,9 @@ Future<Response> onRequest(RequestContext context) async {
     return Response(body: '');
   }
 
-  final user = context.read<TodoAuthUser?>();
+  final user = await context.read<Future<TodoAuthUser>>();
 
-  if (user == null) {
+  if (user.isEmpty) {
     // verifiedToken was null
     return Response.json(
       statusCode: HttpStatus.unauthorized,

@@ -3,14 +3,17 @@ import 'package:uuid/uuid.dart';
 
 /// This store uses an in-memory database for the
 /// sake of this exercise. In a production scenario
-/// this would connect to an actual database
+/// this would be replaced with an SQL/NoSQL database
+final Map<String, List<Map<String, dynamic>>> _memoryDb = {
+  'users': <Map<String, dynamic>>[],
+  'todos': <Map<String, dynamic>>[],
+};
+
+/// Interface for interacting with _memoryDb store
 class Store {
   ///
   @visibleForTesting
-  final Map<String, List<Map<String, dynamic>>> memoryDb = {
-    'users': <Map<String, dynamic>>[],
-    'todos': <Map<String, dynamic>>[],
-  };
+  Map<String, List<Map<String, dynamic>>> get memoryDb => _memoryDb;
 
   final _uuid = const Uuid();
 

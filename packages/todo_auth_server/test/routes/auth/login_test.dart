@@ -12,9 +12,10 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 void main() {
   group('/auth/login', () {
-    test('POST responds with a 200 and jwt token', () async {
-      final context = _MockRequestContext();
-      final store = Store()
+    late Store store;
+
+    setUp(() {
+      store = Store()
         ..memoryDb['users']!.add({
           'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
           'name': 'Johnny',
@@ -22,8 +23,15 @@ void main() {
           'password':
               '0083b3ecada67c5d9608ca9aab4a9cbf19f7ca453fa56e3789320d0013feb7a0',
           'salt': 'JISxNzVFqP0ensZHYIVboSZNWt6npZSm5ZqCmc/xiXU=',
-          'isComplete': false,
         });
+    });
+
+    tearDown(() {
+      store.memoryDb['users']!.clear();
+    });
+
+    test('POST responds with a 200 and jwt token', () async {
+      final context = _MockRequestContext();
       final request = Request.post(
         Uri.parse('http://localhost/auth/login'),
         body: json.encode({
@@ -39,24 +47,11 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(
-        decodedBody['message'],
-        matches(RegExp('.+')),
-      );
+      expect(decodedBody['message'], matches(RegExp('.+')));
     });
 
     test('POST responds with a 401 if invalid payload', () async {
       final context = _MockRequestContext();
-      final store = Store()
-        ..memoryDb['users']!.add({
-          'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
-          'name': 'Johnny',
-          'email': 'johnny@todo.com',
-          'password':
-              'd28f58ff00adf43286ee62cebcc09e3d2aa2f5c69d2c6f14e8bd4b8a1b4c21c1',
-          'salt': 'aldMtMMt+zEsE16iltUzUNBL4LXMZWw6uqj5tbmlVDA=',
-          'isComplete': false,
-        });
       final request = Request.post(
         Uri.parse('http://localhost/auth/login'),
         body: json.encode({
@@ -81,16 +76,6 @@ void main() {
 
     test('POST responds with a 401 if user does not exist', () async {
       final context = _MockRequestContext();
-      final store = Store()
-        ..memoryDb['users']!.add({
-          'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
-          'name': 'Johnny',
-          'email': 'johnny@todo.com',
-          'password':
-              'd28f58ff00adf43286ee62cebcc09e3d2aa2f5c69d2c6f14e8bd4b8a1b4c21c1',
-          'salt': 'aldMtMMt+zEsE16iltUzUNBL4LXMZWw6uqj5tbmlVDA=',
-          'isComplete': false,
-        });
       final request = Request.post(
         Uri.parse('http://localhost/auth/login'),
         body: json.encode({
@@ -115,16 +100,6 @@ void main() {
 
     test('POST responds with a 401 if password is incorrect', () async {
       final context = _MockRequestContext();
-      final store = Store()
-        ..memoryDb['users']!.add({
-          'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
-          'name': 'Johnny',
-          'email': 'johnny@todo.com',
-          'password':
-              'd28f58ff00adf43286ee62cebcc09e3d2aa2f5c69d2c6f14e8bd4b8a1b4c21c1',
-          'salt': 'aldMtMMt+zEsE16iltUzUNBL4LXMZWw6uqj5tbmlVDA=',
-          'isComplete': false,
-        });
       final request = Request.post(
         Uri.parse('http://localhost/auth/login'),
         body: json.encode({
