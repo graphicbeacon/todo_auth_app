@@ -8,7 +8,7 @@ Future<Response> onRequest(RequestContext context) async {
     return Response(body: '');
   }
 
-  final user = context.read<TodoAuthUser>();
+  final user = await context.read<Future<TodoAuthUser>>();
   if (user.isEmpty) {
     // User does not exist or jwt is invalid
     return Response.json(

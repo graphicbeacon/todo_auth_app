@@ -3,7 +3,7 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:todo_auth_server/todo_auth_server.dart';
 
 /// Verify JWT and retrieve user object
-Middleware asyncUserProvider() {
+Middleware asyncUserProvider(Store store) {
   return provider<Future<TodoAuthUser>>((context) async {
     final authHeader = context.request.headers['Authorization'];
 
@@ -17,7 +17,7 @@ Middleware asyncUserProvider() {
         bearer,
         SecretKey(TodoAuthServerConstants.jwtSecretKey),
       );
-      final user = context.read<Store>().getUserById(verifiedToken.subject);
+      final user = store.getUserById(verifiedToken.subject);
 
       if (user.isEmpty) {
         throw Exception('Empty user');

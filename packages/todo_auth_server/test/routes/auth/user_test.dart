@@ -22,7 +22,8 @@ void main() {
       final request = Request.post(Uri.parse('http://localhost/auth/user'));
 
       when(() => context.request).thenReturn(request);
-      when(() => context.read<TodoAuthUser>()).thenReturn(user);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
       final body = await response.body();
@@ -39,7 +40,8 @@ void main() {
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Store>()).thenReturn(store);
-      when(() => context.read<TodoAuthUser>()).thenReturn(TodoAuthUser.empty());
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => TodoAuthUser.empty());
 
       final response = await route.onRequest(context);
       final body = await response.body();
