@@ -19,6 +19,8 @@ You will need the following installed:
 2. [Dart Frog CLI](https://dartfrog.vgv.dev/docs/overview#installing-)
 3. [LCOV Coverage Testing](https://formulae.brew.sh/formula/lcov)
 
+Run `melos bootstrap` to update all packages.
+
 ## Architecture
 
 This project consists of the following packages:
