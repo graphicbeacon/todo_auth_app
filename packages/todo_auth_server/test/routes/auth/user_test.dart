@@ -35,11 +35,11 @@ void main() {
 
     test('POST responds with a 401 if user does not exist', () async {
       final context = _MockRequestContext();
-      final store = Store();
+      final store = InMemoryTodosDataStore();
       final request = Request.post(Uri.parse('http://localhost/auth/user'));
 
       when(() => context.request).thenReturn(request);
-      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
       when(() => context.read<Future<TodoAuthUser>>())
           .thenAnswer((_) async => TodoAuthUser.empty());
 

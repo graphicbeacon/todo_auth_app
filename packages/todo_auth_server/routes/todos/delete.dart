@@ -33,7 +33,7 @@ Future<Response> onRequest(RequestContext context) async {
   final userId = user.id;
   final id = info['id'];
 
-  final deletedTodo = context.read<Store>().deleteTodo(
+  final deletedTodo = context.read<InMemoryTodosDataStore>().deleteTodo(
         userId: userId,
         id: id as String,
       );

@@ -1,3 +1,4 @@
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:equatable/equatable.dart';
 
 /// Represents a logged in user
@@ -30,4 +31,16 @@ class TodoAuthUser extends Equatable {
 
   @override
   List<String> get props => [id, name, email];
+}
+
+/// Represents a decoded JWT token
+class JwtOrJwtError {
+  ///
+  const JwtOrJwtError({this.jwt, this.jwtError});
+
+  ///
+  final JWT? jwt;
+
+  ///
+  final JWTError? jwtError;
 }

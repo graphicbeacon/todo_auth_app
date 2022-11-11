@@ -27,7 +27,7 @@ Future<Response> onRequest(RequestContext context) async {
   final password = info['password'] as String;
 
   // Get user and validate
-  final user = context.read<Store>().getUserByEmail(email);
+  final user = context.read<InMemoryTodosDataStore>().getUserByEmail(email);
 
   if (user.isEmpty) {
     return Response.json(

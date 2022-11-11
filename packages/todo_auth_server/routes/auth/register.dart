@@ -28,7 +28,7 @@ Future<Response> onRequest(RequestContext context) async {
   final password = info['password'] as String;
 
   // Ensure user is unique
-  final user = context.read<Store>().getUserByEmail(email);
+  final user = context.read<InMemoryTodosDataStore>().getUserByEmail(email);
   if (user.isNotEmpty) {
     return Response.json(
       statusCode: HttpStatus.badRequest,
@@ -42,7 +42,7 @@ Future<Response> onRequest(RequestContext context) async {
   // Add user to database
   final salt = generateSalt();
   final hashedPassword = hashPassword(password, salt);
-  context.read<Store>().addUser(
+  context.read<InMemoryTodosDataStore>().addUser(
         name: name,
         email: email,
         password: hashedPassword,

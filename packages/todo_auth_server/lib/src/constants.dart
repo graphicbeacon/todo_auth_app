@@ -22,6 +22,9 @@ enum TodoAuthResponseErrorCodes {
   userAlreadyExists('USER_ALREADY_EXISTS'),
 
   ///
+  invalidJwt('INVALID_JWT'),
+
+  ///
   notFound('RESOURCE_NOT_FOUND');
 
   ///

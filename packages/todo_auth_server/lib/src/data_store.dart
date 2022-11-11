@@ -1,6 +1,50 @@
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
+/// Interface for interacting with database
+abstract class TodosDataStore {
+  /// Add new user
+  void addUser({
+    required String name,
+    required String email,
+    required String password,
+    required String salt,
+  });
+
+  /// Retrieve user by their email address
+  Map<String, dynamic> getUserByEmail(String email);
+
+  /// Retrieve user by their unique id
+  Map<String, dynamic> getUserById(String? id);
+
+  /// Get all todos by user
+  List<Map<String, dynamic>> getTodos(String userId);
+
+  /// Create new todo for user
+  Map<String, dynamic> addTodo({
+    required String userId,
+    required String title,
+    String? dueDate,
+    String? description,
+  });
+
+  /// Update an existing todo
+  Map<String, dynamic>? updateTodo({
+    required String userId,
+    required String id,
+    String? title,
+    String? dueDate,
+    String? description,
+    bool? isComplete,
+  });
+
+  /// Remove todo from datastore
+  Map<String, dynamic>? deleteTodo({
+    required String userId,
+    required String id,
+  });
+}
+
 /// This store uses an in-memory database for the
 /// sake of this exercise. In a production scenario
 /// this would be replaced with an SQL/NoSQL database
@@ -10,14 +54,14 @@ final Map<String, List<Map<String, dynamic>>> _memoryDb = {
 };
 
 /// Interface for interacting with _memoryDb store
-class Store {
+class InMemoryTodosDataStore implements TodosDataStore {
   ///
   @visibleForTesting
   Map<String, List<Map<String, dynamic>>> get memoryDb => _memoryDb;
 
   final _uuid = const Uuid();
 
-  ///
+  @override
   void addUser({
     required String name,
     required String email,
@@ -33,26 +77,26 @@ class Store {
     });
   }
 
-  ///
+  @override
   Map<String, dynamic> getUserByEmail(String email) {
     return memoryDb['users']!
         .singleWhere((user) => user['email'] == email, orElse: () => {});
   }
 
-  ///
+  @override
   Map<String, dynamic> getUserById(String? id) {
     return memoryDb['users']!
         .singleWhere((user) => user['id'] == id, orElse: () => {});
   }
 
-  ///
+  @override
   List<Map<String, dynamic>> getTodos(String userId) {
     return memoryDb['todos']!
         .where((todo) => todo['userId'] == userId)
         .toList();
   }
 
-  ///
+  @override
   Map<String, dynamic> addTodo({
     required String userId,
     required String title,
@@ -72,7 +116,7 @@ class Store {
     return newTodo;
   }
 
-  ///
+  @override
   Map<String, dynamic>? updateTodo({
     required String userId,
     required String id,
@@ -105,7 +149,7 @@ class Store {
     return updatedTodo;
   }
 
-  ///
+  @override
   Map<String, dynamic>? deleteTodo({
     required String userId,
     required String id,

@@ -36,7 +36,7 @@ Future<Response> onRequest(RequestContext context) async {
   final dueDate = info['dueDate'];
   final description = info['description'];
 
-  final createdTodo = context.read<Store>().addTodo(
+  final createdTodo = context.read<InMemoryTodosDataStore>().addTodo(
         userId: userId,
         title: title as String,
         dueDate: dueDate as String?,

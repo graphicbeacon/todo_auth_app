@@ -11,10 +11,10 @@ import '../../../routes/todos/update.dart' as route;
 class _MockRequestContext extends Mock implements RequestContext {}
 
 void main() {
-  late Store store;
+  late InMemoryTodosDataStore store;
 
   setUp(() {
-    store = Store()
+    store = InMemoryTodosDataStore()
       ..memoryDb['users']!.addAll([
         {
           'id': '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
@@ -69,7 +69,7 @@ void main() {
       );
 
       when(() => context.request).thenReturn(request);
-      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
       when(() => context.read<Future<TodoAuthUser>>())
           .thenAnswer((_) async => user);
 
@@ -130,7 +130,7 @@ void main() {
       );
 
       when(() => context.request).thenReturn(request);
-      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
       when(() => context.read<Future<TodoAuthUser>>())
           .thenAnswer((_) async => user);
 

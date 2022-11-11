@@ -38,7 +38,7 @@ Future<Response> onRequest(RequestContext context) async {
   final description = info['description'];
   final isComplete = info['isComplete'];
 
-  final updatedTodo = context.read<Store>().updateTodo(
+  final updatedTodo = context.read<InMemoryTodosDataStore>().updateTodo(
         userId: userId,
         id: id as String,
         title: title as String,

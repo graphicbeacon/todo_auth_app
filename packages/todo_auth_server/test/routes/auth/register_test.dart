@@ -12,10 +12,10 @@ class _MockRequestContext extends Mock implements RequestContext {}
 
 void main() {
   group('/auth/register', () {
-    late Store store;
+    late InMemoryTodosDataStore store;
 
     setUp(() {
-      store = Store();
+      store = InMemoryTodosDataStore();
     });
 
     tearDown(() {
@@ -33,7 +33,7 @@ void main() {
         }),
       );
       when(() => context.request).thenReturn(request);
-      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
 
       final response = await route.onRequest(context);
 
@@ -93,7 +93,7 @@ void main() {
       when(() => context.request).thenReturn(request);
 
       store.memoryDb['users']!.add({'email': 'johnny@todo.com'});
-      when(() => context.read<Store>()).thenReturn(store);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
 
       final response = await route.onRequest(context);
 
