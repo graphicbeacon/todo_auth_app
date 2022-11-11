@@ -85,12 +85,12 @@ class TodosCubit extends Cubit<TodosState> {
         itemsToDelete: {...state.itemsToDelete, id},
       ));
 
-      await repository.deleteTodo(token: token, id: id);
+      final deletedId = await repository.deleteTodo(token: token, id: id);
 
       emit(state.copyWith(
         deleteItemStatus: TodosRequest.requestSuccess,
         itemsToDelete: {...state.itemsToDelete}..remove(id),
-        todos: [...state.todos]..removeWhere((todo) => todo.id == id),
+        todos: [...state.todos]..removeWhere((todo) => todo.id == deletedId),
       ));
     } catch (_) {
       emit(state.copyWith(

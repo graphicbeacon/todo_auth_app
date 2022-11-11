@@ -44,18 +44,18 @@ class TodoRestService {
     required String? description,
   }) async {
     client.options.headers['Authorization'] = 'Bearer $token';
-    final response = await client.post('todos/create', data: {
+    final response = await client.post('todos', data: {
       'title': title,
       'dueDate': dueDate,
       'description': description,
     });
-    return response.data['data'];
+    return response.data;
   }
 
   Future<List<Map<String, dynamic>>> getTodos(String token) async {
     client.options.headers['Authorization'] = 'Bearer $token';
-    final response = await client.post('todos/list');
-    return (response.data['data'] as List)
+    final response = await client.get('todos');
+    return (response.data as List)
         .map((data) => data as Map<String, dynamic>)
         .toList();
   }
@@ -68,13 +68,12 @@ class TodoRestService {
     String? description,
   }) async {
     client.options.headers['Authorization'] = 'Bearer $token';
-    final response = await client.post('todos/update', data: {
-      'id': id,
+    final response = await client.put('todos/$id', data: {
       'title': title,
       'dueDate': dueDate,
       'description': description,
     });
-    return response.data['data'];
+    return response.data as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> deleteTodo({
@@ -82,7 +81,7 @@ class TodoRestService {
     required String token,
   }) async {
     client.options.headers['Authorization'] = 'Bearer $token';
-    final response = await client.post('todos/delete', data: {'id': id});
-    return response.data['data'];
+    final response = await client.delete('todos/$id');
+    return response.data;
   }
 }
