@@ -2,6 +2,8 @@
 
 A todo app with authentication. 
 
+https://user-images.githubusercontent.com/2960965/201431322-273be197-ea40-4601-85fc-a5bc392a0145.mov
+
 ## Features
 
 * Register an account
