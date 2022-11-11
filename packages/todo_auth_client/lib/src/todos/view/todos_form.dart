@@ -132,42 +132,22 @@ class _TodosFormState extends State<TodosForm> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                DatePickerButton(
-                  isDisabled: isSubmitting,
-                  onSelectedDate: (date) {
-                    if (date != null) {
-                      dueDateCtrl.text = date.toIso8601String();
-                    }
-                  },
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextFormField(
-                    controller: dueDateCtrl,
-                    readOnly: true,
-                    validator: (value) {
-                      if (value != null &&
-                          value.isNotEmpty == true &&
-                          isValidDate(value) == null) {
-                        return 'Please enter the due date';
-                      }
+            DatePickerFormField(
+              controller: dueDateCtrl,
+              onSelectedDate: (date) {
+                if (date != null) {
+                  dueDateCtrl.text = date.toIso8601String();
+                }
+              },
+              validator: (value) {
+                if (value != null &&
+                    value.isNotEmpty == true &&
+                    isValidDate(value) == null) {
+                  return 'Please enter the due date';
+                }
 
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Due date',
-                      counterText: '',
-                      hintText: '<== Select due date',
-                      hintStyle: TextStyle(color: Colors.white30),
-                    ),
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
+                return null;
+              },
             ),
             const SizedBox(height: 20),
             TextFormField(
