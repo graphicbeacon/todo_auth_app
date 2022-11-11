@@ -22,7 +22,11 @@ class TodoListItem extends StatelessWidget {
         (b) => deleteInProgress && b.state.itemsToDelete.contains(data.id));
 
     return Opacity(
-      opacity: isDeleting ? 0.5 : 1,
+      opacity: isDeleting
+          ? 0.5
+          : data.isComplete
+              ? 0.7
+              : 1,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -56,10 +60,15 @@ class TodoListItem extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       data.title,
-                      style: const TextStyle(
-                        color: Colors.deepPurple,
+                      style: TextStyle(
+                        color: data.isComplete
+                            ? Colors.blueGrey
+                            : Colors.deepPurple,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        decoration: data.isComplete
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
                       ),
                     ),
                     if (data.dueDate?.isNotEmpty == true) ...[
@@ -95,7 +104,7 @@ class TodoListItem extends StatelessWidget {
               ),
               CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: deleteInProgress
+                onPressed: deleteInProgress || data.isComplete
                     ? null
                     : () {
                         context.go(

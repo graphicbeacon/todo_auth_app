@@ -66,12 +66,14 @@ class TodoRestService {
     String? title,
     String? dueDate,
     String? description,
+    bool? isComplete,
   }) async {
     client.options.headers['Authorization'] = 'Bearer $token';
     final response = await client.put('todos/$id', data: {
       'title': title,
       'dueDate': dueDate,
       'description': description,
+      'isComplete': isComplete,
     });
     return response.data as Map<String, dynamic>;
   }

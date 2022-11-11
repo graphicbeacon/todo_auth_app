@@ -33,6 +33,13 @@ class TodosScreen extends StatelessWidget {
                 if (state.deleteItemStatus == TodosRequest.requestFailure) {
                   showAlert(context, 'Problem deleting todo. Please try again');
                 }
+
+                if (state.formStatus == TodosRequest.requestFailure) {
+                  showAlert(
+                    context,
+                    'Problem changing todo status. Please try again',
+                  );
+                }
               },
               builder: (context, state) {
                 final authState = context.read<AuthCubit>().state;

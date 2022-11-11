@@ -26,6 +26,12 @@ class _TodoListCheckboxState extends State<TodoListCheckbox> {
   }
 
   @override
+  void didUpdateWidget(covariant TodoListCheckbox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _isChecked = widget.isChecked;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Checkbox(

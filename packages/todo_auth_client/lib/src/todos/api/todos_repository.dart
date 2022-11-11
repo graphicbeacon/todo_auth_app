@@ -36,6 +36,7 @@ class TodosRepository {
       title: todo.title,
       dueDate: todo.dueDate,
       description: todo.description,
+      isComplete: todo.isComplete,
     );
     return Todo.fromJson(response);
   }

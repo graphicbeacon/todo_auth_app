@@ -52,7 +52,7 @@ class TodosCubit extends Cubit<TodosState> {
     try {
       emit(state.copyWith(formStatus: TodosRequest.requestInProgress));
 
-      await repository.updateTodo(
+      final updatedTodo = await repository.updateTodo(
         token: token,
         todo: todo,
       );
@@ -61,7 +61,7 @@ class TodosCubit extends Cubit<TodosState> {
       final todos = [...state.todos]..replaceRange(
           updatedTodoIndex,
           updatedTodoIndex + 1,
-          [todo],
+          [updatedTodo],
         );
 
       emit(
@@ -72,6 +72,7 @@ class TodosCubit extends Cubit<TodosState> {
       );
     } catch (_) {
       emit(state.copyWith(formStatus: TodosRequest.requestFailure));
+      emit(state.copyWith(formStatus: TodosRequest.unknown));
     }
   }
 
