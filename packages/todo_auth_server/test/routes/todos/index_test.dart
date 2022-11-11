@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 import 'package:todo_auth_server/todo_auth_server.dart';
 
-import '../../../routes/todos/list.dart' as route;
+import '../../../routes/todos/index.dart' as route;
 
 class _MockRequestContext extends Mock implements RequestContext {}
 
@@ -64,15 +64,30 @@ void main() {
       ..memoryDb['todos']!.clear();
   });
 
-  group('/todos/list', () {
-    test('POST responds with a 200 and todos', () async {
+  test('responds with 405 if other methods used', () async {
+    final context = _MockRequestContext();
+    final request = Request.patch(Uri.parse('http://localhost/todos'));
+
+    when(() => context.request).thenReturn(request);
+
+    final response = await route.onRequest(context);
+
+    expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
+    expect(
+      response.body(),
+      completion(equals('')),
+    );
+  });
+
+  group('GET /todos', () {
+    test('responds with a 200 and todos', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
         id: '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
         name: 'Johnny',
         email: 'johnny@todo.com',
       );
-      final request = Request.post(Uri.parse('http://localhost/todos/list'));
+      final request = Request.get(Uri.parse('http://localhost/todos'));
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
@@ -81,11 +96,11 @@ void main() {
 
       final response = await route.onRequest(context);
       final body = await response.body();
-      final decodedBody = json.decode(body) as Map<String, dynamic>;
+      final decodedBody = json.decode(body);
 
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(
-        decodedBody['data'],
+        decodedBody,
         equals(
           [
             {
@@ -107,14 +122,14 @@ void main() {
       );
     });
 
-    test('POST responds with a 200 and other todos', () async {
+    test('responds with a 200 and other todos', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
         id: 'b58c03a4-5262-482d-8952-2182a5717875',
-        name: 'Johnny',
-        email: 'johnny@todo.com',
+        name: 'Charles',
+        email: 'charles@todo.com',
       );
-      final request = Request.post(Uri.parse('http://localhost/todos/list'));
+      final request = Request.get(Uri.parse('http://localhost/todos'));
       when(() => context.request).thenReturn(request);
       when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
       when(() => context.read<Future<TodoAuthUser>>())
@@ -122,11 +137,11 @@ void main() {
 
       final response = await route.onRequest(context);
       final body = await response.body();
-      final decodedBody = json.decode(body) as Map<String, dynamic>;
+      final decodedBody = json.decode(body);
 
       expect(response.statusCode, equals(HttpStatus.ok));
       expect(
-        decodedBody['data'],
+        decodedBody,
         equals(
           [
             {
@@ -141,9 +156,9 @@ void main() {
       );
     });
 
-    test('POST responds with a 401 if empty user', () async {
+    test('responds with a 401 if empty user', () async {
       final context = _MockRequestContext();
-      final request = Request.post(Uri.parse('http://localhost/auth/user'));
+      final request = Request.get(Uri.parse('http://localhost/todos'));
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
@@ -158,20 +173,110 @@ void main() {
       expect(decodedBody['code'], equals('UNAUTHORISED'));
       expect(decodedBody['message'], equals('Unauthorised'));
     });
+  });
 
-    test('other than POST responds with empty string', () async {
+  group('POST /todos', () {
+    test('responds with 200 and todo', () async {
       final context = _MockRequestContext();
-      final request = Request.get(Uri.parse('http://localhost/todos/list'));
+      const user = TodoAuthUser(
+        id: 'b58c03a4-5262-482d-8952-2182a5717875',
+        name: 'Johnny',
+        email: 'johnny@todo.com',
+      );
+      final request = Request.post(
+        Uri.parse('http://localhost/todos'),
+        body: json.encode({
+          'title': 'My other todo',
+          'dueDate': '2022-11-11',
+          'description': 'Lorem ipsum dolor',
+        }),
+      );
 
       when(() => context.request).thenReturn(request);
+      when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
 
       final response = await route.onRequest(context);
+      final body = await response.body();
+      final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
+      expect(decodedBody['id'], matches('.+'));
       expect(
-        response.body(),
-        completion(equals('')),
+        decodedBody['userId'],
+        equals('b58c03a4-5262-482d-8952-2182a5717875'),
       );
+      expect(decodedBody['title'], equals('My other todo'));
+      expect(decodedBody['dueDate'], equals('2022-11-11'));
+      expect(decodedBody['description'], equals('Lorem ipsum dolor'));
+      expect(decodedBody['isComplete'], isFalse);
+      expect(store.memoryDb['todos']!.last['id'], matches('.+'));
+      expect(
+        store.memoryDb['todos']!.last['userId'],
+        equals('b58c03a4-5262-482d-8952-2182a5717875'),
+      );
+      expect(
+        store.memoryDb['todos']!.last['title'],
+        equals('My other todo'),
+      );
+      expect(
+        store.memoryDb['todos']!.last['dueDate'],
+        equals('2022-11-11'),
+      );
+      expect(
+        store.memoryDb['todos']!.last['description'],
+        equals('Lorem ipsum dolor'),
+      );
+      expect(
+        store.memoryDb['todos']!.last['isComplete'],
+        isFalse,
+      );
+    });
+
+    test('responds with a 401 if invalid payload', () async {
+      final context = _MockRequestContext();
+      const user = TodoAuthUser(
+        id: 'b58c03a4-5262-482d-8952-2182a5717875',
+        name: 'Johnny',
+        email: 'johnny@todo.com',
+      );
+      final request = Request.post(
+        Uri.parse('http://localhost/todos'),
+        body: json.encode({'title': null}),
+      );
+
+      when(() => context.request).thenReturn(request);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => user);
+
+      final response = await route.onRequest(context);
+      final body = await response.body();
+      final decodedBody = json.decode(body) as Map<String, dynamic>;
+
+      expect(response.statusCode, equals(HttpStatus.badRequest));
+      expect(decodedBody['code'], equals('INVALID_PAYLOAD'));
+      expect(decodedBody['message'], equals('Please provide required data'));
+    });
+
+    test('responds with 401 if invalid user', () async {
+      final context = _MockRequestContext();
+      final request = Request.post(
+        Uri.parse('http://localhost/todos/create'),
+        body: json.encode({'title': 'my todo'}),
+      );
+
+      when(() => context.request).thenReturn(request);
+      when(() => context.read<Future<TodoAuthUser>>())
+          .thenAnswer((_) async => TodoAuthUser.empty());
+
+      final response = await route.onRequest(context);
+      final body = await response.body();
+      final decodedBody = json.decode(body) as Map<String, dynamic>;
+
+      expect(response.statusCode, equals(HttpStatus.unauthorized));
+      expect(decodedBody['code'], equals('UNAUTHORISED'));
+      expect(decodedBody['message'], equals('Unauthorised'));
     });
   });
 }
