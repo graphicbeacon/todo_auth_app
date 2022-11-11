@@ -27,5 +27,15 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  invalidateSession() {
+    emit(state.copyWith(
+      hasInvalidToken: true,
+      token: null,
+    ));
+
+    // Refresh auth state
+    reset();
+  }
+
   reset() => emit(const AuthState());
 }

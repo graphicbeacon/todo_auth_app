@@ -31,6 +31,18 @@ class _AppView extends StatefulWidget {
 }
 
 class AppViewState extends State<_AppView> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Add interceptor for token expiry
+    GetIt.I<TodoRestService>().client.interceptors.add(InvalidTokenInterceptor(
+      onInvalidToken: () {
+        context.read<AuthCubit>().invalidateSession();
+      },
+    ));
+  }
+
   final _router = GoRouter(
     routes: [
       GoRoute(
@@ -53,14 +65,23 @@ class AppViewState extends State<_AppView> {
       ),
       ShellRoute(
         builder: (context, state, child) {
-          return BlocProvider(
-            create: (context) => TodosCubit(
-              TodosRepository(
-                GetIt.I<TodoRestService>(),
+          return BlocListener<AuthCubit, AuthState>(
+            listener: (context, state) {
+              // Redirect to login if session token invalidates or expires
+              if (state.hasInvalidToken == true) {
+                showAlert(context, 'Token expired. Please log in again.');
+                context.go('/');
+              }
+            },
+            child: BlocProvider(
+              create: (context) => TodosCubit(
+                TodosRepository(
+                  GetIt.I<TodoRestService>(),
+                ),
+                const TodosState(),
               ),
-              const TodosState(),
+              child: child,
             ),
-            child: child,
           );
         },
         routes: [
