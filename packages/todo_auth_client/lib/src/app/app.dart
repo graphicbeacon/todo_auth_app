@@ -47,18 +47,18 @@ class AppViewState extends State<_AppView> {
   final _router = GoRouter(
     routes: [
       GoRoute(
-        path: '/',
+        path: TodoAuthAppPaths.root,
         builder: (context, state) => AuthScreen(),
         routes: [
           GoRoute(
-            path: 'register',
+            path: TodoAuthAppPaths.register,
             builder: (context, state) => const RegisterScreen(),
           ),
         ],
         redirect: (context, state) {
           final authState = context.read<AuthCubit>().state;
           if (authState.token != null) {
-            return '/todos';
+            return TodoAuthAppPaths.dashboard;
           }
 
           return null;
@@ -71,7 +71,7 @@ class AppViewState extends State<_AppView> {
               // Redirect to login if session token invalidates or expires
               if (state.hasInvalidToken == true) {
                 showAlert(context, 'Token expired. Please log in again.');
-                context.go('/');
+                context.go(TodoAuthAppPaths.root);
               }
             },
             child: BlocProvider(
@@ -87,16 +87,16 @@ class AppViewState extends State<_AppView> {
         },
         routes: [
           GoRoute(
-            path: '/todos',
+            path: TodoAuthAppPaths.dashboard,
             builder: (context, state) => const DashboardScreen(),
             routes: [
               GoRoute(
-                path: 'new',
+                path: 'newTodo',
                 builder: (context, state) =>
                     const TodosFormScreen(title: 'New Todo'),
               ),
               GoRoute(
-                path: 'edit',
+                path: 'editTodo',
                 builder: (context, state) {
                   if (state.extra is! Map<String, dynamic>) {
                     throw Exception('Missing required "id" parameter');
@@ -112,7 +112,7 @@ class AppViewState extends State<_AppView> {
             redirect: (context, state) {
               final authState = context.read<AuthCubit>().state;
               if (authState.token == null) {
-                return '/';
+                return TodoAuthAppPaths.root;
               }
 
               return null;

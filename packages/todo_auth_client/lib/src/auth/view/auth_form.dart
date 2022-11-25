@@ -52,7 +52,7 @@ class _SigninFormState extends State<SigninForm> {
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == AuthRequest.requestSuccess && state.token != null) {
-          context.go('/todos');
+          context.go(TodoAuthAppPaths.dashboard);
 
           showAlert(
             context,

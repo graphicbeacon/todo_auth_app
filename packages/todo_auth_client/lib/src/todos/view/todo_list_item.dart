@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_auth_client/src/auth/auth.dart';
+import 'package:todo_auth_client/src/core/core.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
 import 'package:todo_auth_client/src/todos/view/todo_list_checkbox.dart';
 
@@ -108,7 +109,7 @@ class TodoListItem extends StatelessWidget {
                     ? null
                     : () {
                         context.go(
-                          '/todos/edit',
+                          TodoAuthAppPaths.editTodo,
                           extra: {'id': data.id},
                         );
                       },

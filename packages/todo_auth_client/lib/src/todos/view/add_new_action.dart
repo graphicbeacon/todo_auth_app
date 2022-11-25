@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_auth_client/src/core/core.dart';
 
 class AddNewAction extends StatelessWidget {
   const AddNewAction({super.key});
@@ -8,7 +9,7 @@ class AddNewAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push('/todos/new');
+        context.push(TodoAuthAppPaths.newTodo);
       },
       child: Row(
         children: const [

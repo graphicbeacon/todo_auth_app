@@ -97,7 +97,7 @@ class _TodosFormState extends State<TodosForm> {
             false,
           );
 
-          context.go('/todos');
+          context.go(TodoAuthAppPaths.dashboard);
         }
 
         if (state.formStatus == TodosRequest.requestFailure) {
@@ -165,7 +165,7 @@ class _TodosFormState extends State<TodosForm> {
             SizedBox(
               width: double.infinity,
               child: CupertinoButton(
-                onPressed: submitForm,
+                onPressed: isSubmitting ? null : submitForm,
                 color: Colors.white,
                 child: const Text(
                   'Save',

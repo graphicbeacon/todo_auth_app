@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_auth_client/src/core/core.dart';
 
 class NoTodosFound extends StatelessWidget {
   const NoTodosFound({super.key});
@@ -27,7 +28,7 @@ class NoTodosFound extends StatelessWidget {
         const SizedBox(height: 14),
         CupertinoButton(
           onPressed: () {
-            context.go('/todos/new');
+            context.go(TodoAuthAppPaths.newTodo);
           },
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           color: theme.primaryColor,
