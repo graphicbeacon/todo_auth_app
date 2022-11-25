@@ -268,6 +268,16 @@ void main() {
               ),
             ],
           ),
+          const TodosState(
+            formStatus: TodosRequest.unknown,
+            todos: [
+              Todo(
+                id: '1',
+                title: 'todo title 1',
+                isComplete: false,
+              ),
+            ],
+          ),
         ],
       );
     });

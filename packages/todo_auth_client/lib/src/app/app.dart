@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_auth_client/src/auth/auth.dart';
 import 'package:todo_auth_client/src/core/core.dart';
+import 'package:todo_auth_client/src/dashboard/dashboard.dart';
 import 'package:todo_auth_client/src/services/services.dart';
 import 'package:todo_auth_client/src/register/register.dart';
 import 'package:todo_auth_client/src/todos/todos.dart';
@@ -87,7 +88,7 @@ class AppViewState extends State<_AppView> {
         routes: [
           GoRoute(
             path: '/todos',
-            builder: (context, state) => const TodosScreen(),
+            builder: (context, state) => const DashboardScreen(),
             routes: [
               GoRoute(
                 path: 'new',

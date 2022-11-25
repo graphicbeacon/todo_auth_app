@@ -8,12 +8,11 @@ environment:
 
 dependencies:
   crypto: ^3.0.2
-  dart_frog: ^0.2.0
+  dart_frog: ^0.3.1
   dart_jsonwebtoken: ^2.5.0
   equatable: ^2.0.5
   meta: ^1.8.0
-  mongo_dart: ^0.8.0
-  uuid: ^3.0.6
+  uuid: ^3.0.7
 
 dev_dependencies:
   mocktail: ^0.3.0

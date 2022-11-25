@@ -5,7 +5,7 @@ class AuthRepository {
 
   final TodoRestService service;
 
-  Future<String> login({
+  Future<Map<String, dynamic>> login({
     required String email,
     required String password,
   }) {
@@ -13,5 +13,9 @@ class AuthRepository {
       email: email,
       password: password,
     );
+  }
+
+  Future<Map<String, dynamic>> getAuthenticatedUser(String token) {
+    return service.getAuthenticatedUser(token);
   }
 }

@@ -11,15 +11,15 @@ import '../../../routes/auth/user.dart' as route;
 class _MockRequestContext extends Mock implements RequestContext {}
 
 void main() {
-  group('/auth/user', () {
-    test('POST responds with a 200 and user details', () async {
+  group('GET /auth/user', () {
+    test('responds with a 200 and user details', () async {
       final context = _MockRequestContext();
       const user = TodoAuthUser(
         id: '645dd7c5-dc1d-4b2d-9729-0174d3d08e91',
         name: 'Johnny',
         email: 'johnny@todo.com',
       );
-      final request = Request.post(Uri.parse('http://localhost/auth/user'));
+      final request = Request.get(Uri.parse('http://localhost/auth/user'));
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<Future<TodoAuthUser>>())
@@ -30,13 +30,19 @@ void main() {
       final decodedBody = json.decode(body) as Map<String, dynamic>;
 
       expect(response.statusCode, equals(HttpStatus.ok));
-      expect(decodedBody['data'], equals('Johnny'));
+      expect(
+        decodedBody,
+        equals({
+          'name': 'Johnny',
+          'email': 'johnny@todo.com',
+        }),
+      );
     });
 
-    test('POST responds with a 401 if user does not exist', () async {
+    test('responds with a 401 if user does not exist', () async {
       final context = _MockRequestContext();
       final store = InMemoryTodosDataStore();
-      final request = Request.post(Uri.parse('http://localhost/auth/user'));
+      final request = Request.get(Uri.parse('http://localhost/auth/user'));
 
       when(() => context.request).thenReturn(request);
       when(() => context.read<InMemoryTodosDataStore>()).thenReturn(store);
@@ -52,15 +58,15 @@ void main() {
       expect(decodedBody['message'], equals('Unauthorised'));
     });
 
-    test('other than POST responds with empty string', () async {
+    test('responds with 405 if other methods used', () async {
       final context = _MockRequestContext();
-      final request = Request.get(Uri.parse('http://localhost/auth/user'));
+      final request = Request.post(Uri.parse('http://localhost/auth/user'));
 
       when(() => context.request).thenReturn(request);
 
       final response = await route.onRequest(context);
 
-      expect(response.statusCode, equals(HttpStatus.ok));
+      expect(response.statusCode, equals(HttpStatus.methodNotAllowed));
       expect(
         response.body(),
         completion(equals('')),

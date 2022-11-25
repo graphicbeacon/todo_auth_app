@@ -25,7 +25,7 @@ class TodoRestService {
     return response.data['data'];
   }
 
-  Future<String> login({
+  Future<Map<String, dynamic>> login({
     required String email,
     required String password,
   }) async {
@@ -34,7 +34,13 @@ class TodoRestService {
       'email': email,
       'password': password,
     });
-    return response.data['data'];
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> getAuthenticatedUser(String token) async {
+    client.options.headers['Authorization'] = 'Bearer $token';
+    final response = await client.get('auth/user');
+    return response.data;
   }
 
   Future<Map<String, dynamic>> createTodo({

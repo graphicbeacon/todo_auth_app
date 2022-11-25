@@ -30,7 +30,7 @@ void main() {
           when(() => mockApi.login(
                 email: 'auth@todo.com',
                 password: 'password',
-              )).thenAnswer((_) async => 'my token');
+              )).thenAnswer((_) async => {'data': 'my token'});
 
           await bloc.login(
             email: 'auth@todo.com',
@@ -63,6 +63,46 @@ void main() {
         expect: () => [
           const AuthState(status: AuthRequest.requestInProgress),
           const AuthState(status: AuthRequest.requestFailure),
+        ],
+      );
+    });
+
+    group('getAuthenticatedUser()', () {
+      blocTest<AuthCubit, AuthState>(
+        'emits success when invoked',
+        build: () => genAuthCubit(),
+        act: (bloc) async {
+          when(() => mockApi.getAuthenticatedUser('my token'))
+              .thenAnswer((_) async => {
+                    'name': 'Johnny',
+                    'email': 'johnny@todo.com',
+                  });
+
+          await bloc.getAuthenticatedUser('my token');
+        },
+        expect: () => const [
+          AuthState(userStatus: AuthRequest.requestInProgress),
+          AuthState(
+              userStatus: AuthRequest.requestSuccess,
+              user: AuthUser(
+                name: 'Johnny',
+                email: 'johnny@todo.com',
+              )),
+        ],
+      );
+
+      blocTest<AuthCubit, AuthState>(
+        'emits failure when invoked',
+        build: () => genAuthCubit(),
+        act: (bloc) async {
+          when(() => mockApi.getAuthenticatedUser('my token'))
+              .thenThrow((_) => Exception('Problems'));
+
+          await bloc.getAuthenticatedUser('my token');
+        },
+        expect: () => const [
+          AuthState(userStatus: AuthRequest.requestInProgress),
+          AuthState(userStatus: AuthRequest.requestFailure),
         ],
       );
     });

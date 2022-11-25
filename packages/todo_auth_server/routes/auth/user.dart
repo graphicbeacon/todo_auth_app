@@ -4,8 +4,11 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:todo_auth_server/todo_auth_server.dart';
 
 Future<Response> onRequest(RequestContext context) async {
-  if (context.request.method != HttpMethod.post) {
-    return Response(body: '');
+  if (context.request.method != HttpMethod.get) {
+    return Response(
+      statusCode: HttpStatus.methodNotAllowed,
+      body: '',
+    );
   }
 
   final user = await context.read<Future<TodoAuthUser>>();
@@ -21,5 +24,10 @@ Future<Response> onRequest(RequestContext context) async {
   }
 
   // All good
-  return Response.json(body: {'data': user.name});
+  return Response.json(
+    body: {
+      'name': user.name,
+      'email': user.email,
+    },
+  );
 }
